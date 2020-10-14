@@ -9,7 +9,9 @@ notifications:
 env:
   global:
     - ADDITIONAL_DEBS='apt-utils dialog curl wget'
+    - AFTER_SCRIPT='rosenv bash .travis.xacro_test.sh'
     - CATKIN_LINT=pedantic
+    - CATKIN_LINT_ARGS='--ignore description_boilerplate'
     - CMAKE_ARGS=-DCMAKE_BUILD_TYPE=Release
     - NOT_TEST_DOWNSTREAM=true
     - PYLINT_ARGS="--output-format=parseable --errors-only"
