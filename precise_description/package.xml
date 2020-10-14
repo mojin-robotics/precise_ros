@@ -6,8 +6,11 @@
       URDF Description for Precise Flex 400
   </description>
 
+  <author>Alex Reed</author>
   <author>Benjamin Maidel</author>
+  <author>Felix Messmer</author>
   <maintainer email="benjamin.maidel@mojin-robotics.de">Benjamin Maidel</maintainer>
+  <maintainer email="felixmessmer@gmail.com">Felix Messmer</maintainer>
 
   <license>BSD</license>
 
