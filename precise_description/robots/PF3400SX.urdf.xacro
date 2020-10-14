@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="PF3400SX">
+
+  <xacro:include filename="$(find precise_description)/urdf/precise_flex.urdf.xacro"/>
+
+  <xacro:precise_flex name="arm" parent="world">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+  </xacro:precise_flex>
+
+  <link name="world"/>
+
+</robot>
