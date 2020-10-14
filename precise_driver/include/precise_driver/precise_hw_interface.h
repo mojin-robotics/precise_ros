@@ -2,8 +2,10 @@
 
 #include <realtime_tools/realtime_publisher.h>
 #include <ros_control_boilerplate/generic_hw_interface.h>
-#include <std_msgs/Float64.h>
-#include <map>
+#include <ros/ros.h>
+
+#include <std_srvs/Trigger.h>
+#include <std_srvs/SetBool.h>
 
 namespace precise_driver
 {
@@ -19,7 +21,18 @@ namespace precise_driver
         virtual void enforceLimits(ros::Duration &period);
 
     private:
+        ros::ServiceServer _init_srv;
+        ros::ServiceServer _teachmode_srv;
+        ros::ServiceServer _home_srv;
+        ros::ServiceServer _power_srv;
+        ros::ServiceServer _attach_srv;
 
+
+        bool init_cb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+        bool teachmode_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
+        bool home_cb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+        bool power_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
+        bool attach_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
     }; // class
 
 } // namespace precise_driver
