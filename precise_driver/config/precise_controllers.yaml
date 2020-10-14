@@ -13,6 +13,19 @@ hardware_interface:
     - joint5
   sim_control_mode: 0 # 0: position, 1: velocity
 
+  ip_address: 127.0.0.1
+  port: 10100
+  profile_no: 2
+  speed: 100
+  speed2: 100
+  accel: 100
+  deccel: 100
+  accel_ramp: 0.1
+  deccel_ramp: 0.1
+  in_range: 10
+  straight: 0 #0=rotational; -1=straight
+
+
 # Publish all joint states ----------------------------------
 # Creates the /joint_states topic necessary in ROS
 joint_state_controller:
