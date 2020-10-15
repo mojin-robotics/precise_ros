@@ -3,6 +3,7 @@ project(precise_driver)
 
 find_package(catkin REQUIRED COMPONENTS
   angles
+  realtime_tools
   ros_control_boilerplate
 )
 
@@ -20,7 +21,7 @@ add_dependencies(precise_hw_node ${catkin_EXPORTED_TARGETS})
 target_link_libraries(precise_hw_node precise_hw_interface ${catkin_LIBRARIES})
 
 ## Install
-install(TARGETS precise_hw_node precise_hw_interface
+install(TARGETS precise_hw_interface precise_hw_node
  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
