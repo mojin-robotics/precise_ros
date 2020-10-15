@@ -6,6 +6,23 @@
 
   <xacro:macro name="precise_flex" params="parent name *origin">
 
+    <xacro:property name="origin_1_joint">
+      <origin xyz="${robot_properties['arm']['arm_1_joint']['origin']['x']} ${robot_properties['arm']['arm_1_joint']['origin']['y']} ${robot_properties['arm']['arm_1_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_1_joint']['origin']['roll']} ${robot_properties['arm']['arm_1_joint']['origin']['pitch']} ${robot_properties['arm']['arm_1_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_2_joint">
+      <origin xyz="${robot_properties['arm']['arm_2_joint']['origin']['x']} ${robot_properties['arm']['arm_2_joint']['origin']['y']} ${robot_properties['arm']['arm_2_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_2_joint']['origin']['roll']} ${robot_properties['arm']['arm_2_joint']['origin']['pitch']} ${robot_properties['arm']['arm_2_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_3_joint">
+      <origin xyz="${robot_properties['arm']['arm_3_joint']['origin']['x']} ${robot_properties['arm']['arm_3_joint']['origin']['y']} ${robot_properties['arm']['arm_3_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_3_joint']['origin']['roll']} ${robot_properties['arm']['arm_3_joint']['origin']['pitch']} ${robot_properties['arm']['arm_3_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_4_joint">
+      <origin xyz="${robot_properties['arm']['arm_4_joint']['origin']['x']} ${robot_properties['arm']['arm_4_joint']['origin']['y']} ${robot_properties['arm']['arm_4_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_4_joint']['origin']['roll']} ${robot_properties['arm']['arm_4_joint']['origin']['pitch']} ${robot_properties['arm']['arm_4_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_5_joint">
+      <origin xyz="${robot_properties['arm']['arm_5_joint']['origin']['x']} ${robot_properties['arm']['arm_5_joint']['origin']['y']} ${robot_properties['arm']['arm_5_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_5_joint']['origin']['roll']} ${robot_properties['arm']['arm_5_joint']['origin']['pitch']} ${robot_properties['arm']['arm_5_joint']['origin']['yaw']}"/>
+    </xacro:property>
+
+
     <!-- mounting -->
     <joint name="${name}_base_joint" type="fixed">
       <xacro:insert_block name="origin" />
@@ -91,7 +108,7 @@
       <parent link="z_column"/>
       <child link="z_carriage"/>
       <axis xyz="0 0 1"/>
-      <origin xyz="0.03005 -0.0198 0.17535" rpy="0 0 0"/>
+      <xacro:insert_block name="origin_1_joint"/>
       <limit effort="1000.0" lower="0.0015" upper="0.4015" velocity="0.5"/>
     </joint>
 
@@ -99,7 +116,7 @@
       <parent link="z_carriage"/>
       <child link="inner_link"/>
       <axis xyz="0 0 1"/>
-      <origin xyz="0.173001 0.020 .0235" rpy="0 0 0"/>
+      <xacro:insert_block name="origin_2_joint"/>
       <limit effort="1000.0" lower="-1.62316" upper="1.62316" velocity="0.5"/>
     </joint>
 
@@ -107,7 +124,7 @@
       <parent link="inner_link"/>
       <child link="outer_link"/>
       <axis xyz="0 0 1"/>
-      <origin xyz="0.302 0 -0.072285" rpy="0 0 0"/>
+      <xacro:insert_block name="origin_3_joint"/>
       <limit effort="1000.0" lower="0.20944" upper="6.07375" velocity="0.5"/>
     </joint>
 
@@ -115,7 +132,7 @@
       <parent link="outer_link"/>
       <child link="hand"/>
       <axis xyz="0 0 1"/>
-      <origin xyz="0.289 0 -0.032942" rpy="0 0 0"/>
+      <xacro:insert_block name="origin_4_joint"/>
       <limit effort="1000.0" lower="-16.7552" upper="16.7552" velocity="0.5"/>
     </joint>
 
@@ -123,7 +140,7 @@
       <parent link="hand"/>
       <child link="left_finger"/>
       <axis xyz="0 1 0"/>
-      <origin xyz="0.078573 0 -0.04269" rpy="0 0 0"/>
+      <xacro:insert_block name="origin_5_joint"/>
       <limit effort="1000.0" lower="0.051954" upper="0.070" velocity="0.5"/>
     </joint>
 
@@ -131,7 +148,7 @@
       <parent link="hand"/>
       <child link="right_finger"/>
       <axis xyz="0 -1 0"/>
-      <origin xyz="0.078573 0 -0.04269" rpy="0 0 0"/>
+      <xacro:insert_block name="origin_5_joint"/>
       <limit effort="1000.0" lower="0.051954" upper="0.070" velocity="0.5"/>
       <mimic joint="${name}_5_joint" multiplier="1"/>
     </joint>
