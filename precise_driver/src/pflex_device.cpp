@@ -261,6 +261,7 @@ namespace precise_driver {
         double joint;
         while(ss >> joint) joints.push_back(joint);
         
+        return joints;
     }
 
     geometry_msgs::Pose PFlexDevice::getCartesianPosition()
