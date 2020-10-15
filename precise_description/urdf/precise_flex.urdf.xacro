@@ -87,7 +87,7 @@
 
 
     <!-- Joints -->
-    <joint name="Joint1" type="prismatic">
+    <joint name="${name}_1_joint" type="prismatic">
       <parent link="z_column"/>
       <child link="z_carriage"/>
       <axis xyz="0 0 1"/>
@@ -95,7 +95,7 @@
       <limit effort="1000.0" lower="0.0015" upper="0.4015" velocity="0.5"/>
     </joint>
 
-    <joint name="Joint2" type="revolute">
+    <joint name="${name}_2_joint" type="revolute">
       <parent link="z_carriage"/>
       <child link="inner_link"/>
       <axis xyz="0 0 1"/>
@@ -103,7 +103,7 @@
       <limit effort="1000.0" lower="-1.62316" upper="1.62316" velocity="0.5"/>
     </joint>
 
-    <joint name="Joint3" type="revolute">
+    <joint name="${name}_3_joint" type="revolute">
       <parent link="inner_link"/>
       <child link="outer_link"/>
       <axis xyz="0 0 1"/>
@@ -111,7 +111,7 @@
       <limit effort="1000.0" lower="0.20944" upper="6.07375" velocity="0.5"/>
     </joint>
 
-    <joint name="Joint4" type="revolute">
+    <joint name="${name}_4_joint" type="revolute">
       <parent link="outer_link"/>
       <child link="hand"/>
       <axis xyz="0 0 1"/>
@@ -119,7 +119,7 @@
       <limit effort="1000.0" lower="-16.7552" upper="16.7552" velocity="0.5"/>
     </joint>
 
-    <joint name="Joint5" type="prismatic">
+    <joint name="${name}_5_joint" type="prismatic">
       <parent link="hand"/>
       <child link="left_finger"/>
       <axis xyz="0 1 0"/>
@@ -127,13 +127,13 @@
       <limit effort="1000.0" lower="0.051954" upper="0.070" velocity="0.5"/>
     </joint>
 
-    <joint name="Joint5_mirror" type="prismatic">
+    <joint name="${name}_5_mimic_joint" type="prismatic">
       <parent link="hand"/>
       <child link="right_finger"/>
       <axis xyz="0 -1 0"/>
       <origin xyz="0.078573 0 -0.04269" rpy="0 0 0"/>
       <limit effort="1000.0" lower="0.051954" upper="0.070" velocity="0.5"/>
-      <mimic joint="Joint5" multiplier="1"/>
+      <mimic joint="${name}_5_joint" multiplier="1"/>
     </joint>
 
 
