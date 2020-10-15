@@ -6,6 +6,9 @@
 #include <geometry_msgs/Quaternion.h>
 #include <tf/transform_datatypes.h>
 
+//TODO: decide on methods return values. Either return parsed response or pass result variables as reverences
+//and give the return values a success state
+
 namespace precise_driver {
     PFlexDevice::PFlexDevice(TCPConnection &connection)
     {
@@ -18,6 +21,8 @@ namespace precise_driver {
 
     bool PFlexDevice::init(int profile_no, Profile profile)
     {
+        //TODO: check for correct init routine
+
         //connect to robot
         this->connection_->connect();
 
@@ -63,6 +68,8 @@ namespace precise_driver {
         std::stringstream ss;
         ss << "attach "<<static_cast<int>(flag);
         Response res = connection_->sendCommand(ss.str());
+
+        //TODO: check right conditions for return value
         return (flag) ? (bool) std::stoi(res.message) : !(bool)std::stoi(res.message);
     }
 
@@ -77,6 +84,8 @@ namespace precise_driver {
         else
             ss << "selectRobot";
         Response res = connection_->sendCommand(ss.str());
+
+        //TODO: check right conditions for return value
         return (bool)std::stoi(res.message);
     }
 
@@ -98,6 +107,8 @@ namespace precise_driver {
                         << yaw;
 
         Response res = connection_->sendCommand(ss.str());
+
+        //TODO: find correct pflex internal base position that fits to the urdf description
         return (bool)std::stoi(res.message);
     }
 
@@ -136,6 +147,10 @@ namespace precise_driver {
         Profile profile;
         ss >> profile.speed >> profile.speed2 >> profile.accel >> profile.decel >>
             profile.accel_ramp >> profile.decel_ramp >> profile.in_range >> profile.straight;
+
+        //TODO: the ros driver should allways use the same profile, so fjt interpolation can be correctly calculated
+        //what means 100% speed and 100% accel/decel? what meens 100% accel_ramp/decel_ramp?
+        //This needs to fit to the ros controller configuration. Same accel, decel, speed values!
         return profile;
     }
 
@@ -167,9 +182,12 @@ namespace precise_driver {
         std::stringstream ss;
         ss << "nop";
         Response res = connection_->sendCommand(ss.str());
+
+        //TODO: handle no result (timeout?)
         return (bool)std::stoi(res.message);
     }
 
+    //TODO: is this important to us? do we need to know the weight of a plate?
     bool PFlexDevice::setPayload(int payload)
     {
         //TODO: move lock_guard to sendCommand
@@ -236,6 +254,7 @@ namespace precise_driver {
         return (bool)std::stoi(res.message);
     }
 
+    //TODO: be aware, blocking operations are not allowed in the ros_control loop
     bool PFlexDevice::waitForEom(double timeout)
     {
         //TODO: move lock_guard to sendCommand
@@ -260,10 +279,12 @@ namespace precise_driver {
         std::vector<double> joints;
         double joint;
         while(ss >> joint) joints.push_back(joint);
-        
+
+        //TODO: are the results in rads or degs? Is there a convertion factor? Compare to urdf!
         return joints;
     }
 
+    //TODO: in what coordiation system are the cartesian positions? sync with urdf!
     geometry_msgs::Pose PFlexDevice::getCartesianPosition()
     {
         //TODO: move lock_guard to sendCommand
@@ -286,6 +307,7 @@ namespace precise_driver {
         return pose;
     }
 
+    //TODO: in what coordiation system are the cartesian positions? sync with urdf!
     bool PFlexDevice::moveCartesian(geometry_msgs::Pose pose)
     {
         //TODO: move lock_guard to sendCommand
@@ -309,6 +331,7 @@ namespace precise_driver {
         return (bool)std::stoi(res.message);
     }
 
+    //TODO: are joint states in deg or rad? is there a conversion needed?
     bool PFlexDevice::moveJointSpace(std::vector<double> joints)
     {
         //TODO: move lock_guard to sendCommand
@@ -324,6 +347,8 @@ namespace precise_driver {
         return (bool)std::stoi(res.message);
     }
 
+    //TODO: does freemode unlocks all breaks?
+    //There is also a "setTorque" command that can set the desired torque per joint. Need to implement?
     bool PFlexDevice::freeMode(bool enabled)
     {
         //TODO: move lock_guard to sendCommand
