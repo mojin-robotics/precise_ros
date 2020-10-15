@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro"
-       name="PF3400SX">
+       name="PF3400">
 
   <xacro:include filename="$(find precise_description)/urdf/precise_flex.urdf.xacro"/>
 
