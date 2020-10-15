@@ -8,9 +8,10 @@ arm:
       pitch: 0.0
       yaw: 0.0
     limit:
-      lower: -6.28318531  # -360
-      upper: +6.28318531  # +360
-      velocity: 0.8
+      effort: 1000.0
+      lower: 0.0015  # m
+      upper: 0.4015  # m
+      velocity: 0.5
   arm_2_joint:
     origin:
       x:  0.173001
@@ -20,9 +21,10 @@ arm:
       pitch: 0.0
       yaw: 0.0
     limit:
-      lower: -6.28318531  # -360
-      upper: +6.28318531  # +360
-      velocity: 0.8
+      effort: 1000.0
+      lower: -1.62316  # -93
+      upper: +1.62316  # +93
+      velocity: 0.5
   arm_3_joint:
     origin:
       x:  0.302
@@ -32,9 +34,10 @@ arm:
       pitch: 0.0
       yaw: 0.0
     limit:
-      lower: -6.28318531  # -360
-      upper: +6.28318531  # +360
-      velocity: 0.8
+      effort: 1000.0
+      lower: +0.20944  # +12
+      upper: +6.07375  # +348
+      velocity: 0.5
   arm_4_joint:
     origin:
       x:  0.289
@@ -44,9 +47,10 @@ arm:
       pitch: 0.0
       yaw: 0.0
     limit:
-      lower: -6.28318531  # -360
-      upper: +6.28318531  # +360
-      velocity: 0.8
+      effort: 1000.0
+      lower: -16.7552  # -960
+      upper: +16.7552  # +960
+      velocity: 0.5
   arm_5_joint:
     origin:
       x:  0.078573
@@ -56,6 +60,7 @@ arm:
       pitch: 0.0
       yaw: 0.0
     limit:
-      lower: -6.28318531  # -360
-      upper: +6.28318531  # +360
-      velocity: 0.8
+      effort: 1000.0
+      lower: +0.051954  # m
+      upper: +0.070     # m
+      velocity: 0.5
