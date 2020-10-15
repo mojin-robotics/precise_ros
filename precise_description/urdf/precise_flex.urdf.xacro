@@ -49,6 +49,7 @@
 
     <!-- Links -->
     <link name="z_column">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -59,6 +60,7 @@
     </link>
 
     <link name="z_carriage">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -69,6 +71,7 @@
     </link>
 
     <link name="inner_link">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -79,6 +82,7 @@
     </link>
 
     <link name="outer_link">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -89,6 +93,7 @@
     </link>
 
     <link name="hand">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -99,6 +104,7 @@
     </link>
 
     <link name="left_finger">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -109,6 +115,7 @@
     </link>
 
     <link name="right_finger">
+      <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
