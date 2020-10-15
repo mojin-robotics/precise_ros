@@ -52,7 +52,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Z_Column.STL" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://precise_description/meshes/PF3400_Z_Column.STL"/>
         </geometry>
         <material name="white"/>
       </visual>
@@ -62,7 +62,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Z_Carriage.STL" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://precise_description/meshes/PF3400_Z_Carriage.STL"/>
         </geometry>
         <material name="white"/>
       </visual>
@@ -72,7 +72,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Inner_Link.STL" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://precise_description/meshes/PF3400_Inner_Link.STL"/>
         </geometry>
         <material name="white"/>
       </visual>
@@ -82,7 +82,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Outer_Link.STL" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://precise_description/meshes/PF3400_Outer_Link.STL"/>
         </geometry>
         <material name="white"/>
       </visual>
@@ -92,7 +92,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Hand.STL" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://precise_description/meshes/PF3400_Hand.STL"/>
         </geometry>
         <material name="white"/>
       </visual>
@@ -102,7 +102,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Left_Finger.STL" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://precise_description/meshes/PF3400_Left_Finger.STL"/>
         </geometry>
         <material name="aluminum"/>
       </visual>
@@ -112,7 +112,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Right_Finger.STL" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://precise_description/meshes/PF3400_Right_Finger.STL"/>
         </geometry>
         <material name="aluminum"/>
       </visual>
