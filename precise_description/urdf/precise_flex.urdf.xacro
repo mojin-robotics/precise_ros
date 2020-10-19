@@ -125,7 +125,6 @@
       </visual>
     </link>
 
-
     <!-- Joints -->
     <joint name="${name}_1_joint" type="prismatic">
       <parent link="z_column"/>
@@ -176,6 +175,14 @@
       <mimic joint="${name}_5_joint" multiplier="1"/>
     </joint>
 
+
+    <!-- endeffector -->
+    <joint name="gripper_ee_fixed_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="hand"/>
+      <child link="gripper_ee_fixed_link" />
+    </joint>
+    <link name="gripper_ee_fixed_link"/>
 
     <!-- extensions -->
     <xacro:precise_flex_transmission name="${name}"/>
