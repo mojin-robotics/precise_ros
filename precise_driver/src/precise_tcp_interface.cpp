@@ -1,4 +1,5 @@
 #include <precise_driver/precise_tcp_interface.h>
+#include <ros/ros.h>
 
 using namespace boost::asio;
 using ip::tcp;
@@ -77,7 +78,30 @@ namespace precise_driver
                 throw boost::system::system_error(error);
         }
 
-        return result;
+        Response res;
+        std::stringstream ss;
+        ss.str(result);
+        if(result.size() > 0)
+        {
+            ss >> res.error;
+        }
+        if(res.error == 0 && result.size() > 1)
+        {
+            std::getline(ss, res.message);
+            res.success = true;
+        }
+        else if(res.error == 0 && result.size() == 1)
+        {
+            res.success = true;
+        }
+        else
+        {
+            res.success = false;
+            std::getline(ss, res.message);
+            ROS_ERROR_STREAM("error response code: "<< res.error <<" message: "<<res.message);
+        }
+
+        return res;
     }
 
 } // namespace precise_driver

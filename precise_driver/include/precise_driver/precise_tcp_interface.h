@@ -3,9 +3,17 @@
 #include <iostream>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
+#include <mutex>
 
 namespace precise_driver
 {
+    struct Response
+    {
+        bool success;
+        std::string message;
+        int error;
+    };
+
     class PreciseTCPInterface
     {
     public:
@@ -13,7 +21,7 @@ namespace precise_driver
 
         void connect();
         void disconnect();
-        std::string send(const std::string &data);
+        Response send(const std::string &data);
 
     private:
         bool _connected;
@@ -21,7 +29,8 @@ namespace precise_driver
         unsigned _port;
         boost::asio::io_service _io_service;
         boost::shared_ptr<boost::asio::ip::tcp::socket> _socket;
-  
+        std::mutex _comm_mutex;
+
     }; // class
-  
+
 } // namespace precise_driver
