@@ -1,0 +1,66 @@
+arm:
+  arm_1_joint:
+    origin:
+      x:  0.03005
+      y: -0.0198
+      z:  0.17535
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: 0.0015  # m
+      upper: 0.4015  # m - 400mm standard, 750 mm, 1160 mm
+      velocity: 0.5
+  arm_2_joint:
+    origin:
+      x:  0.173001
+      y:  0.020
+      z:  0.0235
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: -1.57079632679  # -90
+      upper: +1.57079632679  # +90
+      velocity: 0.5
+  arm_3_joint:
+    origin:
+      x:  0.302
+      y:  0.0
+      z: -0.072285
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: -2.91469985083  # -167
+      upper: +2.91469985083  # +167
+      velocity: 0.5
+  arm_4_joint:
+    origin:
+      x:  0.289
+      y:  0.0
+      z: -0.032942
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: -16.9296937443  # -970
+      upper: +16.9296937443  # +970
+      velocity: 0.5
+  arm_5_joint:
+    origin:
+      x:  0.078573
+      y:  0.0
+      z: -0.04269
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: +0.051954  # m
+      upper: +0.070     # m
+      velocity: 0.5

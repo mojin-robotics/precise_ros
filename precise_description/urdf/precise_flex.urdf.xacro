@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find precise_description)/urdf/materials.xacro"/>
+  <xacro:include filename="$(find precise_description)/urdf/transmission.xacro" />
+
+  <xacro:macro name="precise_flex" params="parent name *origin">
+
+    <xacro:property name="origin_1_joint">
+      <origin xyz="${robot_properties['arm']['arm_1_joint']['origin']['x']} ${robot_properties['arm']['arm_1_joint']['origin']['y']} ${robot_properties['arm']['arm_1_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_1_joint']['origin']['roll']} ${robot_properties['arm']['arm_1_joint']['origin']['pitch']} ${robot_properties['arm']['arm_1_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_2_joint">
+      <origin xyz="${robot_properties['arm']['arm_2_joint']['origin']['x']} ${robot_properties['arm']['arm_2_joint']['origin']['y']} ${robot_properties['arm']['arm_2_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_2_joint']['origin']['roll']} ${robot_properties['arm']['arm_2_joint']['origin']['pitch']} ${robot_properties['arm']['arm_2_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_3_joint">
+      <origin xyz="${robot_properties['arm']['arm_3_joint']['origin']['x']} ${robot_properties['arm']['arm_3_joint']['origin']['y']} ${robot_properties['arm']['arm_3_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_3_joint']['origin']['roll']} ${robot_properties['arm']['arm_3_joint']['origin']['pitch']} ${robot_properties['arm']['arm_3_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_4_joint">
+      <origin xyz="${robot_properties['arm']['arm_4_joint']['origin']['x']} ${robot_properties['arm']['arm_4_joint']['origin']['y']} ${robot_properties['arm']['arm_4_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_4_joint']['origin']['roll']} ${robot_properties['arm']['arm_4_joint']['origin']['pitch']} ${robot_properties['arm']['arm_4_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_5_joint">
+      <origin xyz="${robot_properties['arm']['arm_5_joint']['origin']['x']} ${robot_properties['arm']['arm_5_joint']['origin']['y']} ${robot_properties['arm']['arm_5_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_5_joint']['origin']['roll']} ${robot_properties['arm']['arm_5_joint']['origin']['pitch']} ${robot_properties['arm']['arm_5_joint']['origin']['yaw']}"/>
+    </xacro:property>
+
+    <xacro:property name="limit_1_joint">
+      <limit effort="${robot_properties['arm']['arm_1_joint']['limit']['effort']}" lower="${robot_properties['arm']['arm_1_joint']['limit']['lower']}" upper="${robot_properties['arm']['arm_1_joint']['limit']['upper']}" velocity="${robot_properties['arm']['arm_1_joint']['limit']['velocity']}"/>
+    </xacro:property>
+    <xacro:property name="limit_2_joint">
+      <limit effort="${robot_properties['arm']['arm_2_joint']['limit']['effort']}" lower="${robot_properties['arm']['arm_2_joint']['limit']['lower']}" upper="${robot_properties['arm']['arm_2_joint']['limit']['upper']}" velocity="${robot_properties['arm']['arm_2_joint']['limit']['velocity']}"/>
+    </xacro:property>
+    <xacro:property name="limit_3_joint">
+      <limit effort="${robot_properties['arm']['arm_3_joint']['limit']['effort']}" lower="${robot_properties['arm']['arm_3_joint']['limit']['lower']}" upper="${robot_properties['arm']['arm_3_joint']['limit']['upper']}" velocity="${robot_properties['arm']['arm_3_joint']['limit']['velocity']}"/>
+    </xacro:property>
+    <xacro:property name="limit_4_joint">
+      <limit effort="${robot_properties['arm']['arm_4_joint']['limit']['effort']}" lower="${robot_properties['arm']['arm_4_joint']['limit']['lower']}" upper="${robot_properties['arm']['arm_4_joint']['limit']['upper']}" velocity="${robot_properties['arm']['arm_4_joint']['limit']['velocity']}"/>
+    </xacro:property>
+    <xacro:property name="limit_5_joint">
+      <limit effort="${robot_properties['arm']['arm_5_joint']['limit']['effort']}" lower="${robot_properties['arm']['arm_5_joint']['limit']['lower']}" upper="${robot_properties['arm']['arm_5_joint']['limit']['upper']}" velocity="${robot_properties['arm']['arm_5_joint']['limit']['velocity']}"/>
+    </xacro:property>
+
+
+    <!-- mounting -->
+    <joint name="${name}_base_joint" type="fixed">
+      <xacro:insert_block name="origin" />
+      <parent link="${parent}"/>
+      <child link="z_column" />
+    </joint>
+
+
+    <!-- Links -->
+    <link name="z_column">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/PF3400_Z_Column.STL"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+
+    <link name="z_carriage">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/PF3400_Z_Carriage.STL"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+
+    <link name="inner_link">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/PF3400_Inner_Link.STL"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+
+    <link name="outer_link">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/PF3400_Outer_Link.STL"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+
+    <link name="hand">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/PF3400_Hand.STL"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+
+    <link name="left_finger">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/PF3400_Left_Finger.STL"/>
+        </geometry>
+        <material name="aluminum"/>
+      </visual>
+    </link>
+
+    <link name="right_finger">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/PF3400_Right_Finger.STL"/>
+        </geometry>
+        <material name="aluminum"/>
+      </visual>
+    </link>
+
+
+    <!-- Joints -->
+    <joint name="${name}_1_joint" type="prismatic">
+      <parent link="z_column"/>
+      <child link="z_carriage"/>
+      <axis xyz="0 0 1"/>
+      <xacro:insert_block name="origin_1_joint"/>
+      <xacro:insert_block name="limit_1_joint"/>
+    </joint>
+
+    <joint name="${name}_2_joint" type="revolute">
+      <parent link="z_carriage"/>
+      <child link="inner_link"/>
+      <axis xyz="0 0 1"/>
+      <xacro:insert_block name="origin_2_joint"/>
+      <xacro:insert_block name="limit_2_joint"/>
+    </joint>
+
+    <joint name="${name}_3_joint" type="revolute">
+      <parent link="inner_link"/>
+      <child link="outer_link"/>
+      <axis xyz="0 0 1"/>
+      <xacro:insert_block name="origin_3_joint"/>
+      <xacro:insert_block name="limit_3_joint"/>
+    </joint>
+
+    <joint name="${name}_4_joint" type="revolute">
+      <parent link="outer_link"/>
+      <child link="hand"/>
+      <axis xyz="0 0 1"/>
+      <xacro:insert_block name="origin_4_joint"/>
+      <xacro:insert_block name="limit_4_joint"/>
+    </joint>
+
+    <joint name="${name}_5_joint" type="prismatic">
+      <parent link="hand"/>
+      <child link="left_finger"/>
+      <axis xyz="0 1 0"/>
+      <xacro:insert_block name="origin_5_joint"/>
+      <xacro:insert_block name="limit_5_joint"/>
+    </joint>
+
+    <joint name="${name}_5_mimic_joint" type="prismatic">
+      <parent link="hand"/>
+      <child link="right_finger"/>
+      <axis xyz="0 -1 0"/>
+      <xacro:insert_block name="origin_5_joint"/>
+      <xacro:insert_block name="limit_5_joint"/>
+      <mimic joint="${name}_5_joint" multiplier="1"/>
+    </joint>
+
+
+    <!-- extensions -->
+    <xacro:precise_flex_transmission name="${name}"/>
+
+    <!-- ros_control plugin -->
+    <gazebo>
+      <plugin name="ros_control" filename="libhwi_switch_gazebo_ros_control.so">
+        <robotNamespace>${name}</robotNamespace>
+        <filterJointsParam>joint_names</filterJointsParam>
+      </plugin>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

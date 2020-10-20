@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find precise_description)/urdf/common.xacro"/>
+
+  <xacro:macro name="precise_flex_transmission" params="name">
+
+    <xacro:default_transmission joint_name="${name}_1_joint"/>
+    <xacro:default_transmission joint_name="${name}_2_joint"/>
+    <xacro:default_transmission joint_name="${name}_3_joint"/>
+    <xacro:default_transmission joint_name="${name}_4_joint"/>
+    <xacro:default_transmission joint_name="${name}_5_joint"/>
+    <xacro:default_transmission joint_name="${name}_5_mimic_joint"/>
+
+  </xacro:macro>
+
+</robot>
