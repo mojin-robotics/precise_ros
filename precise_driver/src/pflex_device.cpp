@@ -2,6 +2,7 @@
 #include <sstream>
 #include <string>
 
+#include <ros/ros.h>
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Quaternion.h>
 #include <tf/transform_datatypes.h>
@@ -9,91 +10,137 @@
 //TODO: decide on methods return values. Either return parsed response or pass result variables as reverences
 //and give the return values a success state
 
-namespace precise_driver {
-    PFlexDevice::PFlexDevice(TCPConnection &connection)
+namespace precise_driver
+{
+    PFlexDevice::PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection)
     {
-        this->connection_ = &connection;
+        connection_ = connection;
     }
 
-    PFlexDevice::~PFlexDevice(){
-
+    PFlexDevice::~PFlexDevice()
+    {
+        std::cout<<"exiting"<<std::endl;
+        setHp(false);
+        exit();
     }
 
     bool PFlexDevice::init(int profile_no, Profile profile)
     {
         //TODO: check for correct init routine
+        ROS_INFO("initializing...");
 
         //connect to robot
-        this->connection_->connect();
+        try{
+            connection_->connect();
+        }
+        catch(boost::system::system_error &e)
+        {
+            ROS_ERROR_STREAM(e.what());
+            return false;
+        }
+
+        int sysState = getSysState(true);
+        ROS_INFO_STREAM("SysState is: "<<sysState);
+
+        ROS_DEBUG("setting Mode to 0");
+        setMode(0);
 
         //test connection
-        if(!this->nop())
+        ROS_DEBUG("testing connection...");
+        if(!nop())
+        {
+            ROS_ERROR("connection test failed");
             return false;
+        }
+        ROS_DEBUG("success");
 
-        this->is_attached_ = this->attach(false);
-        this->setHp(true);
+        sysState = getSysState(true);
+        ROS_DEBUG_STREAM("SysState is: "<<sysState);
 
-        this->setProfile(profile_no, profile);
-        this->is_attached_ = this->attach(true);
+        ROS_DEBUG("detach");
+        is_attached_ = attach(false);
 
+        ROS_DEBUG("set High Power");
+        setHp(true, 5);
+
+        sysState = getSysState(true);
+        ROS_DEBUG_STREAM("SysState is: "<<sysState);
+
+        setProfile(profile_no, profile);
+        is_attached_ = attach(true);
+
+        ROS_INFO("initialized");
+        return is_attached_;
+    }
+
+    bool PFlexDevice::operable()
+    {
+        bool ret;
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            ret = is_attached_ && is_homed_ && is_hp_ && !is_teachmode_;
+        }
+        return ret;
+    }
+
+    bool PFlexDevice::exit()
+    {
+        std::stringstream ss;
+        ss << "exit";
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 
     bool PFlexDevice::halt()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "halt";
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 
     bool PFlexDevice::home()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "home";
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        Response res = connection_->send(ss.str());
+
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            is_homed_ = res.success;
+        }
+
+        return res.success;
     }
 
     bool PFlexDevice::attach(bool flag)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "attach "<<static_cast<int>(flag);
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
 
-        //TODO: check right conditions for return value
-        return (flag) ? (bool) std::stoi(res.message) : !(bool)std::stoi(res.message);
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            is_attached_ = res.success && flag;
+        }
+
+        return (res.error == 0);
     }
 
     bool PFlexDevice::selectRobot(int robot)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         if(robot!=-1)
             ss << "selectRobot "<< robot;
         else
             ss << "selectRobot";
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
 
-        //TODO: check right conditions for return value
-        return (bool)std::stoi(res.message);
+        return (res.error == 0);
     }
 
     bool PFlexDevice::setBase(geometry_msgs::Pose pose)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         tf::Quaternion quat;
         tf::quaternionMsgToTF(pose.orientation, quat);
@@ -106,20 +153,17 @@ namespace precise_driver {
                         << pose.position.z << " "
                         << yaw;
 
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
 
         //TODO: find correct pflex internal base position that fits to the urdf description
-        return (bool)std::stoi(res.message);
+        return (res.error == 0);
     }
 
     geometry_msgs::Pose PFlexDevice::getBase()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "setBase";
-        //Response res = connection_->sendCommand(ss.str());
+        //Response res = connection_->send(ss.str());
         ss.clear();
         //ss.str(res.message);
         geometry_msgs::Pose pose;
@@ -136,12 +180,9 @@ namespace precise_driver {
 
     Profile PFlexDevice::getProfile(int profile_no)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "profile " << profile_no;
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
         ss.clear();
         ss.str(res.message);
         Profile profile;
@@ -156,9 +197,6 @@ namespace precise_driver {
 
     bool PFlexDevice::setProfile(int profile_no, Profile profile)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "profile " << profile_no << " "
             << profile.speed << " "
@@ -170,129 +208,111 @@ namespace precise_driver {
             << profile.in_range << " "
             << profile.straight;
 
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 
     bool PFlexDevice::nop()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "nop";
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
 
-        //TODO: handle no result (timeout?)
-        return (bool)std::stoi(res.message);
+
+        return (res.error == 0);
     }
 
     //TODO: is this important to us? do we need to know the weight of a plate?
     bool PFlexDevice::setPayload(int payload)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "payload " << payload;
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 
     int PFlexDevice::getPayload()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "payload";
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
         return std::stoi(res.message);
     }
 
     bool PFlexDevice::setSpeed(int speed)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "speed " << speed;
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 
     int PFlexDevice::getSpeed()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "speed";
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
         return std::stoi(res.message);
     }
 
-    bool PFlexDevice::setHp(bool enabled)
+    bool PFlexDevice::setHp(bool enabled, int timeout)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
-        ss << "hp " << static_cast<int>(enabled);
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        if(timeout != 0)
+            ss << "hp " << static_cast<int>(enabled) << " " << timeout;
+        else
+            ss << "hp " << static_cast<int>(enabled);
+        Response res = connection_->send(ss.str());
+
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            is_hp_ = res.success && enabled;
+        }
+
+        return (res.error == 0);
     }
 
     bool PFlexDevice::getHp()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "hp";
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
         return (bool)std::stoi(res.message);
     }
 
     //TODO: be aware, blocking operations are not allowed in the ros_control loop
     bool PFlexDevice::waitForEom(double timeout)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "waitForEom";
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 
     std::vector<double> PFlexDevice::getJointPositions()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "wherej";
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
         ss.clear();
         ss.str(res.message);
         std::vector<double> joints;
         double joint;
         while(ss >> joint) joints.push_back(joint);
 
-        //TODO: are the results in rads or degs? Is there a convertion factor? Compare to urdf!
+        std::transform(transform_vec_.begin(), transform_vec_.end(),
+                        joints.begin(), joints.begin(),
+                        std::multiplies<double>() );
+
         return joints;
     }
 
     //TODO: in what coordiation system are the cartesian positions? sync with urdf!
     geometry_msgs::Pose PFlexDevice::getCartesianPosition()
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
         ss << "wherec";
-        Response res = connection_->sendCommand(ss.str());
+        Response res = connection_->send(ss.str());
         ss.clear();
         ss.str(res.message);
         geometry_msgs::Pose pose;
@@ -308,55 +328,89 @@ namespace precise_driver {
     }
 
     //TODO: in what coordiation system are the cartesian positions? sync with urdf!
-    bool PFlexDevice::moveCartesian(geometry_msgs::Pose pose)
+    bool PFlexDevice::moveCartesian(int profile_no,  geometry_msgs::Pose pose)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
+        ss.precision(3);
+        ss << std::fixed;
         tf::Quaternion quat;
         tf::quaternionMsgToTF(pose.orientation, quat);
         double roll, pitch, yaw;
         tf::Matrix3x3(quat).getRPY(roll, pitch, yaw);
 
 
-        ss << "movec " << pose.position.x << " "
+        ss << "movec " << profile_no << " "
+                        << pose.position.x << " "
                         << pose.position.y << " "
                         << pose.position.z << " "
                         << roll << " "
                         << pitch << " "
                         << yaw;
 
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 
     //TODO: are joint states in deg or rad? is there a conversion needed?
-    bool PFlexDevice::moveJointSpace(std::vector<double> joints)
+    bool PFlexDevice::moveJointSpace(int profile_no, std::vector<double> joints)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
+        std::transform(joints.begin(), joints.end(),
+                        transform_vec_.begin(), joints.begin(),
+                        std::divides<double>() );
 
         std::stringstream ss;
-        ss << "movej ";
+        ss.precision(3);
+        ss << "movej " << profile_no;
         for(size_t i = 0; i < joints.size(); ++i)
         {
-            ss << joints[i];
+            ss << " " << std::fixed << joints[i];
         }
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 
     //TODO: does freemode unlocks all breaks?
     //There is also a "setTorque" command that can set the desired torque per joint. Need to implement?
     bool PFlexDevice::freeMode(bool enabled)
     {
-        //TODO: move lock_guard to sendCommand
-        std::lock_guard<std::mutex> guard(this->comm_mutex);
-
         std::stringstream ss;
-        ss << "freemode " << static_cast<int>(enabled);
-        Response res = connection_->sendCommand(ss.str());
-        return (bool)std::stoi(res.message);
+        if(enabled)
+            ss << "zeroTorque " << static_cast<int>(enabled)<<" 31"; //bitmask 1=axis1, 2=axis2, 4=axis3 ...
+        else
+            ss << "zeroTorque " << static_cast<int>(enabled);
+
+        Response res = connection_->send(ss.str());
+
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            is_teachmode_ = res.success && enabled;
+        }
+
+        return (res.error == 0);
+    }
+
+    int PFlexDevice::getSysState(bool mute)
+    {
+        std::stringstream ss;
+        ss << "sysState " << static_cast<int>(mute);
+        Response res = connection_->send(ss.str());
+        return std::stoi(res.message);
+    }
+
+    int PFlexDevice::getMode()
+    {
+        std::stringstream ss;
+        ss << "mode";
+        Response res = connection_->send(ss.str());
+        return std::stoi(res.message);
+    }
+
+    bool PFlexDevice::setMode(int mode)
+    {
+        std::stringstream ss;
+        ss << "mode " << mode;
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
     }
 }
