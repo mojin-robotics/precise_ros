@@ -394,7 +394,10 @@ namespace precise_driver
         std::stringstream ss;
         ss << "sysState " << static_cast<int>(mute);
         Response res = connection_->send(ss.str());
-        return std::stoi(res.message);
+        if(res.message!="")
+            return std::stoi(res.message);
+        else
+            return res.error;
     }
 
     int PFlexDevice::getMode()
