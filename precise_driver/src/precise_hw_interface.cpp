@@ -11,8 +11,10 @@ namespace precise_driver
 
         std::string ip;
         pnh.param<std::string>("ip_address", ip, ip);
-        int port;
-        pnh.param<int>("port", port, port);
+        int control_port = 10100;
+        pnh.param<int>("port", control_port, control_port);
+        int status_port = 10000;
+        pnh.param<int>("port", status_port, status_port);
         pnh.param<int>("profile_no", _profile_no, _profile_no);
         pnh.param<int>("speed", _profile.speed, _profile.speed);
         pnh.param<int>("speed2", _profile.speed2, _profile.speed2);
@@ -23,10 +25,8 @@ namespace precise_driver
         pnh.param<int>("in_range", _profile.in_range, _profile.in_range);
         pnh.param<int>("straight", _profile.straight, _profile.straight);
 
-        ROS_INFO_STREAM("ip: "<<ip);
-        ROS_INFO_STREAM("port: "<<port);
-
-        _device.reset(new PFlexDevice(std::make_shared<PreciseTCPInterface>(ip, port)));
+        _device.reset(new PFlexDevice(std::make_shared<PreciseTCPInterface>(ip, control_port),
+                                std::make_shared<PreciseTCPInterface>(ip, status_port)));
 
         _init_srv = driver_nh.advertiseService("init", &PreciseHWInterface::initCb, this);
         _teachmode_srv = driver_nh.advertiseService("teach_mode", &PreciseHWInterface::teachmodeCb, this);

@@ -26,7 +26,8 @@ namespace precise_driver
     class PFlexDevice
     {
     public:
-        explicit PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection);
+        explicit PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection,
+                    std::shared_ptr<PreciseTCPInterface> status_connection);
         ~PFlexDevice();
 
         void startMoveJThread();
@@ -64,6 +65,8 @@ namespace precise_driver
 
     private:
         std::shared_ptr<PreciseTCPInterface> connection_;
+        std::shared_ptr<PreciseTCPInterface> status_connection_;
+
         bool is_attached_;
         bool is_hp_;
         bool is_homed_;

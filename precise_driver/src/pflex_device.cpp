@@ -12,9 +12,11 @@
 
 namespace precise_driver
 {
-    PFlexDevice::PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection)
+    PFlexDevice::PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection,
+                            std::shared_ptr<PreciseTCPInterface> status_connection)
     {
         connection_ = connection;
+        status_connection_ = status_connection;
         movej_queue_.setMaxSize(2);
     }
 
@@ -35,6 +37,7 @@ namespace precise_driver
         //connect to robot
         try{
             connection_->connect();
+            status_connection_->connect();
         }
         catch(boost::system::system_error &e)
         {
@@ -42,8 +45,7 @@ namespace precise_driver
             return false;
         }
 
-        int sysState = getSysState(true);
-        ROS_INFO_STREAM("SysState is: "<<sysState);
+        status_connection_->send("selectRobot 1");
 
         ROS_DEBUG("setting Mode to 0");
         setMode(0);
@@ -57,7 +59,7 @@ namespace precise_driver
         }
         ROS_DEBUG("success");
 
-        sysState = getSysState(true);
+        int sysState = getSysState(true);
         ROS_DEBUG_STREAM("SysState is: "<<sysState);
 
         ROS_DEBUG("detach");
@@ -91,7 +93,8 @@ namespace precise_driver
         std::stringstream ss;
         ss << "exit";
         Response res = connection_->send(ss.str());
-        return (res.error == 0);
+        Response res2 = status_connection_->send(ss.str());
+        return (res.error == 0) && (res2.error == 0);
     }
 
     bool PFlexDevice::halt()
@@ -296,7 +299,7 @@ namespace precise_driver
     {
         std::stringstream ss;
         ss << "wherej";
-        Response res = connection_->send(ss.str());
+        Response res = status_connection_->send(ss.str());
         ss.clear();
         ss.str(res.message);
         std::vector<double> joints;
