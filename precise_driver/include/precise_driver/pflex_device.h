@@ -21,27 +21,6 @@ namespace precise_driver
         int straight;
     };
 
-    class TCPConnection
-    {
-    public:
-        TCPConnection(){}
-        ~TCPConnection(){}
-
-        bool connect()
-        {
-            std::cout<<"connecting..."<<std::endl;
-            std::cout<<"connected"<<std::endl;
-        }
-        Response sendCommand(std::string cmd)
-        {
-            cmd.append("\n");
-            std::cout<<"sending: "<<cmd<<std::endl;
-            Response res;
-            res.message="succeeded";
-        }
-
-    };
-
     class PFlexDevice
     {
     public:
