@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-	<arg name="robot" default="PF3400"/>
+	<arg name="robot" default="PF400"/>
 
 	<!-- send urdf to param server -->
 	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find precise_description)/robots/$(arg robot).urdf.xacro'"/>
