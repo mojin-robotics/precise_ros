@@ -24,7 +24,7 @@ namespace precise_driver
         exit();
     }
 
-    bool PFlexDevice::init(int profile_no, Profile profile)
+    bool PFlexDevice::init(const int& profile_no, const Profile& profile)
     {
         //TODO: check for correct init routine
         ROS_INFO("initializing...");
@@ -113,7 +113,7 @@ namespace precise_driver
         return res.success;
     }
 
-    bool PFlexDevice::attach(bool flag)
+    bool PFlexDevice::attach(const bool& flag)
     {
         std::stringstream ss;
         ss << "attach "<<static_cast<int>(flag);
@@ -127,7 +127,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::selectRobot(int robot)
+    bool PFlexDevice::selectRobot(const int& robot)
     {
         std::stringstream ss;
         if(robot!=-1)
@@ -139,7 +139,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::setBase(geometry_msgs::Pose pose)
+    bool PFlexDevice::setBase(const geometry_msgs::Pose& pose)
     {
         std::stringstream ss;
         tf::Quaternion quat;
@@ -178,7 +178,7 @@ namespace precise_driver
         return pose;
     }
 
-    Profile PFlexDevice::getProfile(int profile_no)
+    Profile PFlexDevice::getProfile(const int& profile_no)
     {
         std::stringstream ss;
         ss << "profile " << profile_no;
@@ -195,7 +195,7 @@ namespace precise_driver
         return profile;
     }
 
-    bool PFlexDevice::setProfile(int profile_no, Profile profile)
+    bool PFlexDevice::setProfile(const int& profile_no, const Profile& profile)
     {
         std::stringstream ss;
         ss << "profile " << profile_no << " "
@@ -223,7 +223,7 @@ namespace precise_driver
     }
 
     //TODO: is this important to us? do we need to know the weight of a plate?
-    bool PFlexDevice::setPayload(int payload)
+    bool PFlexDevice::setPayload(const int& payload)
     {
         std::stringstream ss;
         ss << "payload " << payload;
@@ -239,7 +239,7 @@ namespace precise_driver
         return std::stoi(res.message);
     }
 
-    bool PFlexDevice::setSpeed(int speed)
+    bool PFlexDevice::setSpeed(const int& profile_no, const int& speed)
     {
         std::stringstream ss;
         ss << "speed " << speed;
@@ -247,7 +247,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    int PFlexDevice::getSpeed()
+    int PFlexDevice::getSpeed(const int& profile_no)
     {
         std::stringstream ss;
         ss << "speed";
@@ -255,7 +255,7 @@ namespace precise_driver
         return std::stoi(res.message);
     }
 
-    bool PFlexDevice::setHp(bool enabled, int timeout)
+    bool PFlexDevice::setHp(const bool& enabled, const int& timeout)
     {
         std::stringstream ss;
         if(timeout != 0)
@@ -281,7 +281,7 @@ namespace precise_driver
     }
 
     //TODO: be aware, blocking operations are not allowed in the ros_control loop
-    bool PFlexDevice::waitForEom(double timeout)
+    bool PFlexDevice::waitForEom(const double& timeout)
     {
         std::stringstream ss;
         ss << "waitForEom";
@@ -328,7 +328,7 @@ namespace precise_driver
     }
 
     //TODO: in what coordiation system are the cartesian positions? sync with urdf!
-    bool PFlexDevice::moveCartesian(int profile_no,  geometry_msgs::Pose pose)
+    bool PFlexDevice::moveCartesian(const int& profile_no,  const geometry_msgs::Pose& pose)
     {
         std::stringstream ss;
         ss.precision(3);
@@ -352,7 +352,7 @@ namespace precise_driver
     }
 
     //TODO: are joint states in deg or rad? is there a conversion needed?
-    bool PFlexDevice::moveJointSpace(int profile_no, std::vector<double> joints)
+    bool PFlexDevice::moveJointSpace(const int& profile_no, const std::vector<double>& joints)
     {
         std::transform(joints.begin(), joints.end(),
                         transform_vec_.begin(), joints.begin(),
@@ -370,9 +370,8 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    //TODO: does freemode unlocks all breaks?
-    //There is also a "setTorque" command that can set the desired torque per joint. Need to implement?
-    bool PFlexDevice::freeMode(bool enabled)
+    //TODO: There is a freeMode command described the TCS Documentation
+    bool PFlexDevice::freeMode(const bool& enabled)
     {
         std::stringstream ss;
         if(enabled)
@@ -390,7 +389,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    int PFlexDevice::getSysState(bool mute)
+    int PFlexDevice::getSysState(const bool& mute)
     {
         std::stringstream ss;
         ss << "sysState " << static_cast<int>(mute);
@@ -406,7 +405,7 @@ namespace precise_driver
         return std::stoi(res.message);
     }
 
-    bool PFlexDevice::setMode(int mode)
+    bool PFlexDevice::setMode(const int& mode)
     {
         std::stringstream ss;
         ss << "mode " << mode;
