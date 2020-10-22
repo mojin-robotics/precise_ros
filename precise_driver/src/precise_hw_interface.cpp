@@ -7,6 +7,7 @@ namespace precise_driver
         : ros_control_boilerplate::GenericHWInterface(nh, urdf_model)
     {
         ros::NodeHandle pnh(nh_, "hardware_interface");
+        ros::NodeHandle driver_nh(nh_, "driver");
 
         std::string ip;
         pnh.param<std::string>("ip_address", ip, ip);
@@ -32,6 +33,7 @@ namespace precise_driver
         _home_srv = nh_.advertiseService("home", &PreciseHWInterface::home_cb, this);
         _power_srv = nh_.advertiseService("power", &PreciseHWInterface::power_cb, this);
         _attach_srv = nh_.advertiseService("attach", &PreciseHWInterface::attach_cb, this);
+        _cmd_srv = driver_nh.advertiseService("command", &PreciseHWInterface::cmdCb, this);
     }
 
     PreciseHWInterface::~PreciseHWInterface()
@@ -127,6 +129,14 @@ namespace precise_driver
             res.success = true;
         else
             res.success = false;
+        return true;
+    }
+
+    bool PreciseHWInterface::cmdCb(cob_srvs::SetString::Request &req, cob_srvs::SetString::Response &res)
+    {
+        res.message = _device->command(req.data);
+        res.success = true;
+
         return true;
     }
 
