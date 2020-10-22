@@ -11,6 +11,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>angles</depend>
+  <depend>cob_srvs</depend>
+  <depend>std_srvs</depend>
   <depend>geometry_msgs</depend>
   <depend>realtime_tools</depend>
   <depend>ros_control_boilerplate</depend>
