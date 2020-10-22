@@ -45,7 +45,6 @@ namespace precise_driver
         std::unique_lock<std::mutex> lock(_mutex_init);
         ROS_INFO("Waiting for robot init");
         _cond_init.wait(lock);
-        ROS_INFO("Init Done");
 
         GenericHWInterface::init();
         std::vector<double> joints = _device->getJointPositions();
@@ -54,8 +53,8 @@ namespace precise_driver
         {
             joint_position_[i] = joints[i];
         }
+        ROS_INFO("PreciseHWInterface Ready.");
     }
-
 
     void PreciseHWInterface::read(ros::Duration &elapsed_time)
     {

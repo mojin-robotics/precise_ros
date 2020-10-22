@@ -75,6 +75,7 @@ namespace precise_driver
         is_attached_ = attach(true);
 
         ROS_INFO("initialized");
+
         return is_attached_;
     }
 
@@ -169,9 +170,9 @@ namespace precise_driver
     {
         std::stringstream ss;
         ss << "setBase";
-        //Response res = connection_->send(ss.str());
+        Response res = connection_->send(ss.str());
         ss.clear();
-        //ss.str(res.message);
+        ss.str(res.message);
         geometry_msgs::Pose pose;
         ss >> pose.position.x >> pose.position.y >> pose.position.z;
         double yaw;
@@ -195,9 +196,6 @@ namespace precise_driver
         ss >> profile.speed >> profile.speed2 >> profile.accel >> profile.decel >>
             profile.accel_ramp >> profile.decel_ramp >> profile.in_range >> profile.straight;
 
-        //TODO: the ros driver should allways use the same profile, so fjt interpolation can be correctly calculated
-        //what means 100% speed and 100% accel/decel? what meens 100% accel_ramp/decel_ramp?
-        //This needs to fit to the ros controller configuration. Same accel, decel, speed values!
         return profile;
     }
 
@@ -223,8 +221,6 @@ namespace precise_driver
         std::stringstream ss;
         ss << "nop";
         Response res = connection_->send(ss.str());
-
-
         return (res.error == 0);
     }
 
@@ -248,7 +244,7 @@ namespace precise_driver
     bool PFlexDevice::setSpeed(const int& profile_no, const int& speed)
     {
         std::stringstream ss;
-        ss << "speed " << speed;
+        ss << "speed " << profile_no << " " << speed;
         Response res = connection_->send(ss.str());
         return (res.error == 0);
     }
@@ -256,7 +252,7 @@ namespace precise_driver
     int PFlexDevice::getSpeed(const int& profile_no)
     {
         std::stringstream ss;
-        ss << "speed";
+        ss << "speed " << profile_no;
         Response res = connection_->send(ss.str());
         return std::stoi(res.message);
     }
@@ -344,7 +340,6 @@ namespace precise_driver
         double roll, pitch, yaw;
         tf::Matrix3x3(quat).getRPY(roll, pitch, yaw);
 
-
         ss << "movec " << profile_no << " "
                         << pose.position.x << " "
                         << pose.position.y << " "
@@ -357,11 +352,11 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    //TODO: are joint states in deg or rad? is there a conversion needed?
     bool PFlexDevice::moveJointSpace(const int& profile_no, const std::vector<double>& joints)
     {
+        std::vector<double> joints_transformed(joints.size());
         std::transform(joints.begin(), joints.end(),
-                        transform_vec_.begin(), joints.begin(),
+                        transform_vec_.begin(), joints_transformed.begin(),
                         std::divides<double>() );
 
         std::stringstream ss;
