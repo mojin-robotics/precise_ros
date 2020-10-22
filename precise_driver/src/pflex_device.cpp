@@ -412,4 +412,18 @@ namespace precise_driver
         Response res = connection_->send(ss.str());
         return (res.error == 0);
     }
+
+    std::string PFlexDevice::command(const std::string& cmd)
+    {
+        Response res = connection_->send(cmd);
+        if(res.error == 0)
+            return res.message;
+        else
+        {
+            std::stringstream ss;
+            ss << "Error: " << res.error;
+            return ss.str();
+        }
+    }
+
 }

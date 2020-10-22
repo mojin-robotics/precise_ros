@@ -53,6 +53,7 @@ namespace precise_driver
         int getSysState(const bool& mute);
         int getMode();
         bool setMode(const int& mode);
+        std::string command(const std::string& cmd);
         bool operable();
 
     private:
