@@ -41,11 +41,12 @@ namespace precise_driver
         std::mutex _mutex_init;
         std::condition_variable _cond_init;
 
-        bool init_cb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
-        bool teachmode_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
-        bool home_cb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
-        bool power_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
-        bool attach_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
+        bool initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+        bool teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
+        bool homeCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+        bool powerCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
+        bool attachCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
+        bool cmdCb(cob_srvs::SetString::Request &req, cob_srvs::SetString::Response &res);
     }; // class
 
 } // namespace precise_driver
