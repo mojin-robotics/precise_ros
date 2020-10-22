@@ -15,11 +15,14 @@ namespace precise_driver
     PFlexDevice::PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection)
     {
         connection_ = connection;
+        movej_queue_.setMaxSize(2);
     }
 
     PFlexDevice::~PFlexDevice()
     {
         std::cout<<"exiting"<<std::endl;
+        movej_queue_.push(std::string("nop"));
+        movej_thread_.join();
         setHp(false);
         exit();
     }
@@ -370,6 +373,23 @@ namespace precise_driver
         return (res.error == 0);
     }
 
+    bool PFlexDevice::queueJointSpace(const int& profile_no, const std::vector<double>& joints)
+    {
+        std::vector<double> joints_transformed(joints.size());
+        std::transform(joints.begin(), joints.end(),
+                        transform_vec_.begin(), joints_transformed.begin(),
+                        std::divides<double>() );
+
+        std::stringstream ss;
+        ss.precision(3);
+        ss << "movej " << profile_no;
+        for(size_t i = 0; i < joints.size(); ++i)
+            ss << " " << std::fixed << joints[i];
+
+        movej_queue_.push(ss.str());
+        return true;
+    }
+
     //TODO: There is a freeMode command described the TCS Documentation
     bool PFlexDevice::freeMode(const bool& enabled)
     {
@@ -429,4 +449,17 @@ namespace precise_driver
         }
     }
 
+    void PFlexDevice::startMoveJThread()
+    {
+        movej_thread_ = std::thread{&PFlexDevice::update_movej, this};
+    }
+
+    void PFlexDevice::update_movej()
+    {
+        while(ros::ok())
+        {
+            std::string cmd = movej_queue_.pop();
+            connection_->send(cmd);
+        }
+    }
 }
