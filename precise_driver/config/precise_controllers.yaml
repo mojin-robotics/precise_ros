@@ -1,7 +1,7 @@
 # Settings for ros_control control loop
 generic_hw_control_loop:
   loop_hz: 20
-  cycle_time_error_threshold: 0.01
+  cycle_time_error_threshold: 0.5
 
 # Settings for ros_control hardware interface
 hardware_interface:
@@ -15,14 +15,15 @@ hardware_interface:
 
   ip_address: 10.4.20.180
   port: 10100
+  status_port: 10000
   profile_no: 2
-  speed: 80
+  speed: 100
   speed2: 0
   accel: 100
   decel: 100
   accel_ramp: 0.1
   decel_ramp: 0.1
-  in_range: 10
+  in_range: -1
   straight: 0 #0=rotational; -1=straight
 
 
@@ -47,20 +48,20 @@ position_trajectory_controller:
     goal_time: 10.0
     #stopped_position_tolerance: 0.4 # Defaults to 0.01
     arm_1_joint:
-      trajectory: 0.60
-      goal: 0.15
+      trajectory: 10.0
+      goal: 0.005
     arm_2_joint:
-      trajectory: 0.60
-      goal: 0.15
+      trajectory: 10.0
+      goal: 0.01
     arm_3_joint:
-      trajectory: 0.60
-      goal: 0.15
+      trajectory: 10.0
+      goal: 0.01
     arm_4_joint:
-      trajectory: 0.60
-      goal: 0.15
+      trajectory: 10.0
+      goal: 0.01
     arm_5_joint:
-      trajectory: 0.60
-      goal: 0.15
+      trajectory: 10.0
+      goal: 0.005
   # gains:
   #     arm_1_joint: {p: 2.0,  i: 0.0, d: 0.01, i_clamp: 1}
   #     arm_2_joint: {p: 2.0,  i: 0.0, d: 0.01, i_clamp: 1}
