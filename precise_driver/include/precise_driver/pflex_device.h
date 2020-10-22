@@ -27,32 +27,32 @@ namespace precise_driver
         explicit PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection);
         ~PFlexDevice();
 
-        bool init(int profile_no, Profile profile);
+        bool init(const int& profile_no, const Profile& profile);
         bool exit();
         bool halt();
         bool home();
-        bool attach(bool flag);
-        bool selectRobot(int robot=-1);
-        bool setBase(geometry_msgs::Pose pose);
+        bool attach(const bool& flag);
+        bool selectRobot(const int& robot=-1);
+        bool setBase(const geometry_msgs::Pose& pose);
         geometry_msgs::Pose getBase();
-        Profile getProfile(int profile_no);
-        bool setProfile(int profile_no, Profile profile);
+        Profile getProfile(const int& profile_no);
+        bool setProfile(const int& profile_no, const Profile& profile);
         bool nop();
-        bool setPayload(int payload);
+        bool setPayload(const int& payload);
         int getPayload();
-        bool setSpeed(int speed);
-        int getSpeed();
-        bool setHp(bool enabled, int timeout=0);
+        bool setSpeed(const int& profile_no, const int& speed);
+        int getSpeed(const int& profile_no);
+        bool setHp(const bool& enabled, const int& timeout=0);
         bool getHp();
-        bool waitForEom(double timeout);
+        bool waitForEom(const double& timeout);
         std::vector<double> getJointPositions();
         geometry_msgs::Pose getCartesianPosition();
-        bool moveCartesian(int profile_no, geometry_msgs::Pose pose);
-        bool moveJointSpace(int profile_no, std::vector<double> joints);
-        bool freeMode(bool enabled);
-        int getSysState(bool mute);
+        bool moveCartesian(const int& profile_no, const geometry_msgs::Pose& pose);
+        bool moveJointSpace(const int& profile_no, const std::vector<double>& joints);
+        bool freeMode(const bool& enabled);
+        int getSysState(const bool& mute);
         int getMode();
-        bool setMode(int mode);
+        bool setMode(const int& mode);
         bool operable();
 
     private:
