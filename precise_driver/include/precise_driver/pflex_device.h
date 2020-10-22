@@ -1,10 +1,12 @@
 #pragma once
 
 #include <precise_driver/precise_tcp_interface.h>
+#include <precise_driver/queue.h>
 
 #include <iostream>
 #include <vector>
 #include <mutex>
+#include <thread>
 
 #include <geometry_msgs/Pose.h>
 
@@ -26,6 +28,8 @@ namespace precise_driver
     public:
         explicit PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection);
         ~PFlexDevice();
+
+        void startMoveJThread();
 
         bool init(const int& profile_no, const Profile& profile);
         bool exit();
@@ -49,12 +53,14 @@ namespace precise_driver
         geometry_msgs::Pose getCartesianPosition();
         bool moveCartesian(const int& profile_no, const geometry_msgs::Pose& pose);
         bool moveJointSpace(const int& profile_no, const std::vector<double>& joints);
+        bool queueJointSpace(const int& profile_no, const std::vector<double>& joints);
         bool freeMode(const bool& enabled);
         int getSysState(const bool& mute);
         int getMode();
         bool setMode(const int& mode);
         std::string command(const std::string& cmd);
         bool operable();
+        void update_movej();
 
     private:
         std::shared_ptr<PreciseTCPInterface> connection_;
@@ -66,6 +72,8 @@ namespace precise_driver
         std::mutex mutex_state_data_;
 
         std::vector<double> transform_vec_ = {0.001, M_PI / 180, M_PI / 180, M_PI / 180, 0.0005};
-    };
 
+        Queue<std::string> movej_queue_;
+        std::thread movej_thread_;
+    };
 }

@@ -73,8 +73,10 @@ namespace precise_driver
         enforceLimits(elapsed_time);
 
         if(_device->operable())
-            _device->moveJointSpace(_profile_no, joint_position_command_);
-
+        {
+            //_device->moveJointSpace(_profile_no, joint_position_command_);
+            _device->queueJointSpace(_profile_no, joint_position_command_);
+        }
     }
 
     void PreciseHWInterface::enforceLimits(ros::Duration &period)
@@ -86,6 +88,7 @@ namespace precise_driver
     {
         if(_device->init(_profile_no, _profile) && _device->home())
         {
+            _device->startMoveJThread();
             res.success = true;
             _cond_init.notify_one();
         }
