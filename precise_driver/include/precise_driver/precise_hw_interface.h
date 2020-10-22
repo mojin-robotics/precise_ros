@@ -11,6 +11,7 @@
 
 #include <std_srvs/Trigger.h>
 #include <std_srvs/SetBool.h>
+#include <cob_srvs/SetString.h>
 
 namespace precise_driver
 {
