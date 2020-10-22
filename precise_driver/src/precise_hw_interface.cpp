@@ -28,11 +28,10 @@ namespace precise_driver
 
         _device.reset(new PFlexDevice(std::make_shared<PreciseTCPInterface>(ip, port)));
 
-        _init_srv = nh_.advertiseService("init", &PreciseHWInterface::init_cb, this);
-        _teachmode_srv = nh_.advertiseService("teach_mode", &PreciseHWInterface::teachmode_cb, this);
-        _home_srv = nh_.advertiseService("home", &PreciseHWInterface::home_cb, this);
-        _power_srv = nh_.advertiseService("power", &PreciseHWInterface::power_cb, this);
-        _attach_srv = nh_.advertiseService("attach", &PreciseHWInterface::attach_cb, this);
+        _init_srv = driver_nh.advertiseService("init", &PreciseHWInterface::initCb, this);
+        _teachmode_srv = driver_nh.advertiseService("teach_mode", &PreciseHWInterface::teachmodeCb, this);
+        _home_srv = driver_nh.advertiseService("home", &PreciseHWInterface::homeCb, this);
+        _power_srv = driver_nh.advertiseService("power", &PreciseHWInterface::powerCb, this);
         _cmd_srv = driver_nh.advertiseService("command", &PreciseHWInterface::cmdCb, this);
     }
 
@@ -83,7 +82,7 @@ namespace precise_driver
         pos_jnt_sat_interface_.enforceLimits(period);
     }
 
-    bool PreciseHWInterface::init_cb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
+    bool PreciseHWInterface::initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
         if(_device->init(_profile_no, _profile) && _device->home())
         {
@@ -95,7 +94,7 @@ namespace precise_driver
         return true;
     }
 
-    bool PreciseHWInterface::teachmode_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
+    bool PreciseHWInterface::teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
     {
         if(_device->freeMode(req.data))
             res.success = true;
@@ -105,7 +104,7 @@ namespace precise_driver
         return true;
     }
 
-    bool PreciseHWInterface::home_cb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
+    bool PreciseHWInterface::homeCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
         if(_device->home())
             res.success = true;
@@ -114,7 +113,7 @@ namespace precise_driver
 
     }
 
-    bool PreciseHWInterface::power_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
+    bool PreciseHWInterface::powerCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
     {
         if(_device->setHp(req.data, 5))
             res.success = true;
@@ -123,7 +122,7 @@ namespace precise_driver
         return true;
     }
 
-    bool PreciseHWInterface::attach_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
+    bool PreciseHWInterface::attachCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
     {
         if(_device->attach(req.data))
             res.success = true;
