@@ -32,6 +32,7 @@ namespace precise_driver
         ros::ServiceServer _home_srv;
         ros::ServiceServer _power_srv;
         ros::ServiceServer _attach_srv;
+        ros::ServiceServer _cmd_srv;
 
         std::shared_ptr<PFlexDevice> _device;
         Profile _profile;
