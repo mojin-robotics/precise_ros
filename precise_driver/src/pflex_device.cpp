@@ -45,7 +45,9 @@ namespace precise_driver
             return false;
         }
 
+        ROS_DEBUG("selecting Robot 1 on status connection");
         status_connection_->send("selectRobot 1");
+        ROS_DEBUG("Robot 1 selected");
 
         ROS_DEBUG("setting Mode to 0");
         setMode(0);
@@ -66,7 +68,11 @@ namespace precise_driver
         is_attached_ = attach(false);
 
         ROS_DEBUG("set High Power");
-        setHp(true, 5);
+        if(!setHp(true, 10))
+        {
+            ROS_ERROR("Could not Power Robot");
+            return false;
+        }
 
         sysState = getSysState(true);
         ROS_DEBUG_STREAM("SysState is: "<<sysState);

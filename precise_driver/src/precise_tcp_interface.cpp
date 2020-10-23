@@ -18,6 +18,7 @@ namespace precise_driver
     {
         if (!_connected)
         {
+            ROS_INFO_STREAM("Connecting to "<<_ip<<":"<<_port);
             try{
                 _socket->connect(tcp::endpoint(boost::asio::ip::address::from_string(_ip), _port));
                 _connected = true;
@@ -51,6 +52,8 @@ namespace precise_driver
 
         boost::system::error_code error;
 
+        ROS_DEBUG_STREAM("sending to "<<_ip<<":"<<_port<<": "<<data);
+
         // Send
         boost::asio::write(*_socket.get(), boost::asio::buffer(data + "\n"), error);
         if (error)
@@ -77,6 +80,8 @@ namespace precise_driver
             else if (error) // Some error occured
                 throw boost::system::system_error(error);
         }
+
+        ROS_DEBUG_STREAM("received from "<<_ip<<":"<<_port<<": "<<result);
 
         Response res;
         std::stringstream ss;
