@@ -370,7 +370,7 @@ namespace precise_driver
         ss << "movej " << profile_no;
         for(size_t i = 0; i < joints.size(); ++i)
         {
-            ss << " " << std::fixed << joints[i];
+            ss << " " << std::fixed << joints_transformed[i];
         }
 
         Response res = connection_->send(ss.str());
@@ -387,8 +387,8 @@ namespace precise_driver
         std::stringstream ss;
         ss.precision(3);
         ss << "movej " << profile_no;
-        for(size_t i = 0; i < joints.size(); ++i)
-            ss << " " << std::fixed << joints[i];
+        for(size_t i = 0; i < joints_transformed.size(); ++i)
+            ss << " " << std::fixed << joints_transformed[i];
 
         movej_queue_.push(ss.str());
         return true;
