@@ -21,6 +21,9 @@
     <xacro:property name="origin_5_joint">
       <origin xyz="${robot_properties['arm']['arm_5_joint']['origin']['x']} ${robot_properties['arm']['arm_5_joint']['origin']['y']} ${robot_properties['arm']['arm_5_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_5_joint']['origin']['roll']} ${robot_properties['arm']['arm_5_joint']['origin']['pitch']} ${robot_properties['arm']['arm_5_joint']['origin']['yaw']}"/>
     </xacro:property>
+    <xacro:property name="origin_gripper_ee_fixed_joint">
+      <origin xyz="${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['x']} ${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['y']} ${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['z']}" rpy="${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['roll']} ${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['pitch']} ${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['yaw']}"/>
+    </xacro:property>
 
     <xacro:property name="limit_1_joint">
       <limit effort="${robot_properties['arm']['arm_1_joint']['limit']['effort']}" lower="${robot_properties['arm']['arm_1_joint']['limit']['lower']}" upper="${robot_properties['arm']['arm_1_joint']['limit']['upper']}" velocity="${robot_properties['arm']['arm_1_joint']['limit']['velocity']}"/>
@@ -178,7 +181,7 @@
 
     <!-- endeffector -->
     <joint name="gripper_ee_fixed_joint" type="fixed">
-      <origin xyz="0.0687 0.0 -0.07" rpy="0 0 0" />
+      <xacro:insert_block name="origin_gripper_ee_fixed_joint"/>
       <parent link="hand"/>
       <child link="gripper_ee_fixed_link" />
     </joint>
