@@ -40,7 +40,13 @@ namespace precise_driver
         int _profile_no;
 
         std::mutex _mutex_init;
+        std::mutex _mutex_write;
         std::condition_variable _cond_init;
+
+        bool _write_enabled;
+
+        void enableWrite(bool value);
+        bool isWriteEnabled();
 
         bool initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
         bool teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);

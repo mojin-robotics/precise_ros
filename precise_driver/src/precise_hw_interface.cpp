@@ -71,7 +71,7 @@ namespace precise_driver
         // Safety
         enforceLimits(elapsed_time);
 
-        if(_device->operable())
+        if(isWriteEnabled() && _device->operable())
         {
             //_device->moveJointSpace(_profile_no, joint_position_command_);
             _device->queueJointSpace(_profile_no, joint_position_command_);
@@ -85,6 +85,7 @@ namespace precise_driver
 
     bool PreciseHWInterface::initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
+        enableWrite(false);
         if(_device->init(_profile_no, _profile) && _device->home())
         {
             _device->startMoveJThread();
@@ -93,52 +94,84 @@ namespace precise_driver
         }
         else
             res.success = false;
+        enableWrite(true);
         return true;
     }
 
     bool PreciseHWInterface::teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
     {
+        enableWrite(false);
         if(_device->freeMode(req.data))
             res.success = true;
         else
             res.success = false;
+
+        enableWrite(true);
 
         return true;
     }
 
     bool PreciseHWInterface::homeCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
+        enableWrite(false);
+
         if(_device->home())
             res.success = true;
         else
             res.success = false;
 
+        enableWrite(true);
+
+        return true;
     }
 
     bool PreciseHWInterface::powerCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
     {
+        enableWrite(false);
         if(_device->setHp(req.data, 5))
             res.success = true;
         else
             res.success = false;
+
+        enableWrite(true);
         return true;
     }
 
     bool PreciseHWInterface::attachCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
     {
+        enableWrite(false);
         if(_device->attach(req.data))
             res.success = true;
         else
             res.success = false;
+        enableWrite(true);
         return true;
     }
 
     bool PreciseHWInterface::cmdCb(cob_srvs::SetString::Request &req, cob_srvs::SetString::Response &res)
     {
+        enableWrite(false);
         res.message = _device->command(req.data);
         res.success = true;
 
+        enableWrite(true);
         return true;
+    }
+
+    void PreciseHWInterface::enableWrite(bool value)
+    {
+        std::lock_guard<std::mutex> guard(_mutex_write);
+        _write_enabled = value;
+    }
+
+    bool PreciseHWInterface::isWriteEnabled()
+    {
+        bool ret;
+        {
+            std::lock_guard<std::mutex> guard(_mutex_write);
+            ret = _write_enabled;
+        }
+        return ret;
     }
 
 } // namespace precise_driver
