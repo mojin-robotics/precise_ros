@@ -14,7 +14,7 @@ hardware_interface:
   sim_control_mode: 0 # 0: position, 1: velocity
 
   ip_address: 10.4.20.180
-  port: 10100
+  control_port: 10100
   status_port: 10000
   profile_no: 2
   speed: 100
