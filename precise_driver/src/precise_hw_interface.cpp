@@ -12,9 +12,9 @@ namespace precise_driver
         std::string ip;
         pnh.param<std::string>("ip_address", ip, ip);
         int control_port = 10100;
-        pnh.param<int>("port", control_port, control_port);
+        pnh.param<int>("control_port", control_port, control_port);
         int status_port = 10000;
-        pnh.param<int>("port", status_port, status_port);
+        pnh.param<int>("status_port", status_port, status_port);
         pnh.param<int>("profile_no", _profile_no, _profile_no);
         pnh.param<int>("speed", _profile.speed, _profile.speed);
         pnh.param<int>("speed2", _profile.speed2, _profile.speed2);
