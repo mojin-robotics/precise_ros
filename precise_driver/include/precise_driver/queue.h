@@ -38,10 +38,8 @@ public:
     {
         std::unique_lock<std::mutex> lock(mutex_);
         if (max_size_ > 0 && queue_.size() >= max_size_)
-        {
-            std::cout << "max size reached. pop item" << std::endl;
             queue_.pop();
-        }
+
         queue_.push(item);
         lock.unlock();
         cond_.notify_one();
@@ -51,10 +49,8 @@ public:
     {
         std::unique_lock<std::mutex> lock(mutex_);
         if (max_size_ > 0 && queue_.size() >= max_size_)
-        {
-            std::cout << "max size reached. pop item" << std::endl;
             queue_.pop();
-        }
+
         queue_.push(std::move(item));
         lock.unlock();
         cond_.notify_one();
