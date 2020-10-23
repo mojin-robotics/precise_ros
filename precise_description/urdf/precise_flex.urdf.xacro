@@ -108,7 +108,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Left_Finger.STL"/>
+          <mesh filename="${robot_properties['arm']['left_finger']['visual_mesh']}"/>
         </geometry>
         <material name="aluminum"/>
       </visual>
@@ -119,7 +119,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Right_Finger.STL"/>
+          <mesh filename="${robot_properties['arm']['right_finger']['visual_mesh']}"/>
         </geometry>
         <material name="aluminum"/>
       </visual>
