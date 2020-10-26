@@ -18,6 +18,9 @@
   <depend>ros_control_boilerplate</depend>
   <depend>std_srvs</depend>
 
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>precise_description</exec_depend>
+
   <test_depend>roslaunch</test_depend>
 
 </package>
