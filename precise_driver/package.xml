@@ -7,9 +7,10 @@
   <maintainer email="benjamin.maidel@mojin-robotics.de">Benjamin Maidel</maintainer>
   <author email="benjamin.maidel@mojin-robotics.de">Benjamin Maidel</author>
 
-  <license>Apache2</license>
+  <license>Apache 2.0</license>
 
   <buildtool_depend>catkin</buildtool_depend>
+
   <depend>angles</depend>
   <depend>cob_srvs</depend>
   <depend>std_srvs</depend>
