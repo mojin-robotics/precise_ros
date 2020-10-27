@@ -7,7 +7,7 @@
 
   <xacro:include filename="$(find precise_description)/urdf/precise_flex.urdf.xacro"/>
 
-  <xacro:precise_flex name="arm" parent="world">
+  <xacro:precise_flex name="arm" parent="world" has_podest="${True}">
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
   </xacro:precise_flex>
 

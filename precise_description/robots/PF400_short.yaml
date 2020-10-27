@@ -1,8 +1,8 @@
 arm:
   left_finger:
-    visual_mesh: package://precise_description/meshes/PF3400_Left_Finger.STL
+    visual_mesh: package://precise_description/meshes/mrk_finger.STL
   right_finger:
-    visual_mesh: package://precise_description/meshes/PF3400_Right_Finger.STL
+    visual_mesh: package://precise_description/meshes/mrk_finger.STL
   arm_1_joint:
     origin:
       x:  0.03005
