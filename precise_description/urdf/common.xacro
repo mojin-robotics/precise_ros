@@ -40,15 +40,15 @@
     </inertial>
   </xacro:macro>
 
-  <xacro:macro name="default_transmission" params="joint_name">
-    <transmission name="${joint_name}_trans">
+  <xacro:macro name="default_transmission" params="jname">
+    <transmission name="${jname}_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${joint_name}">
+      <joint name="${jname}_joint">
         <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
         <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
         <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
       </joint>
-      <actuator name="${joint_name}_motor">
+      <actuator name="${jname}_motor">
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
