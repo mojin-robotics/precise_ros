@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-	<arg name="robot" default="PF400"/>
+	<arg name="robot" default="PF400_short"/>
 	<arg name="gui" default="true"/>
 	<arg name="display_config" default="$(find precise_description)/config/display_robot.rviz"/>
 
