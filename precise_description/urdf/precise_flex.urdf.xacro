@@ -210,7 +210,9 @@
       <parent link="${name}_5_link"/>
       <child link="gripper_ee_fixed_link" />
     </joint>
-    <link name="gripper_ee_fixed_link"/>
+    <link name="gripper_ee_fixed_link">
+      <xacro:default_inertial/>
+    </link>
 
     <!-- extensions -->
     <xacro:precise_flex_transmission name="${name}"/>
