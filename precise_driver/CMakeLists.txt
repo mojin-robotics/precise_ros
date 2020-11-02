@@ -4,16 +4,31 @@ project(precise_driver)
 add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
+  actionlib_msgs
   angles
   cob_srvs
   geometry_msgs
+  message_generation
   realtime_tools
   ros_control_boilerplate
+  std_msgs
   std_srvs
 )
 
+add_service_files(
+  FILES
+  Gripper.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+  actionlib_msgs
+  geometry_msgs
+  std_msgs
+)
+
 catkin_package(
-  CATKIN_DEPENDS cob_srvs geometry_msgs std_srvs
+  CATKIN_DEPENDS actionlib_msgs cob_srvs geometry_msgs message_runtime std_msgs std_srvs
 )
 
 ## Build

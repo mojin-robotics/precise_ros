@@ -1,0 +1,5 @@
+float32 width
+uint8 speed
+uint8 force
+---
+bool success
