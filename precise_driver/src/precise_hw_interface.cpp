@@ -101,11 +101,12 @@ namespace precise_driver
     bool PreciseHWInterface::teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
     {
         enableWrite(false);
+
         if(_device->freeMode(req.data))
             res.success = true;
         else
             res.success = false;
-
+        resetController();
         enableWrite(true);
 
         return true;
@@ -172,6 +173,18 @@ namespace precise_driver
             ret = _write_enabled;
         }
         return ret;
+    }
+
+    void PreciseHWInterface::resetController()
+    {
+        for(size_t i = 0; i < num_joints_; ++i)
+        {
+            joint_position_command_[i] = joint_position_[i];
+
+            try{  position_joint_interface_.getHandle(joint_names_[i]).setCommand(joint_position_command_[i]);  }
+            catch(const hardware_interface::HardwareInterfaceException&){}
+            pos_jnt_sat_interface_.reset();
+        }
     }
 
 } // namespace precise_driver

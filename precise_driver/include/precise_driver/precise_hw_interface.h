@@ -48,6 +48,8 @@ namespace precise_driver
         void enableWrite(bool value);
         bool isWriteEnabled();
 
+        void resetController();
+
         bool initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
         bool teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
         bool homeCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
