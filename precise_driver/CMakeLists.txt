@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib_msgs
   angles
   cob_srvs
+  controller_manager_msgs
   geometry_msgs
   message_generation
   realtime_tools
@@ -18,17 +19,19 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   Gripper.srv
+  Plate.srv
 )
 
 generate_messages(
   DEPENDENCIES
   actionlib_msgs
+  controller_manager_msgs
   geometry_msgs
   std_msgs
 )
 
 catkin_package(
-  CATKIN_DEPENDS actionlib_msgs cob_srvs geometry_msgs message_runtime std_msgs std_srvs
+  CATKIN_DEPENDS actionlib_msgs cob_srvs controller_manager_msgs geometry_msgs message_runtime std_msgs std_srvs
 )
 
 ## Build

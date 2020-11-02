@@ -38,6 +38,8 @@ namespace precise_driver
         ros::ServiceServer _open_gripper_srv;
         ros::ServiceServer _close_gripper_srv;
 
+        ros::ServiceClient _switch_controller_srv;
+
         std::shared_ptr<PFlexDevice> _device;
         Profile _profile;
         int _profile_no;
@@ -51,7 +53,7 @@ namespace precise_driver
         void enableWrite(bool value);
         bool isWriteEnabled();
 
-        void resetController();
+        bool resetController(bool active);
 
         bool initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
         bool teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);

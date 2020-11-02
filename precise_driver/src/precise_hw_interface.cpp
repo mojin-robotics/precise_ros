@@ -1,6 +1,8 @@
 #include <precise_driver/precise_hw_interface.h>
 #include <angles/angles.h>
 
+#include <controller_manager_msgs/SwitchController.h>
+
 namespace precise_driver
 {
     PreciseHWInterface::PreciseHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
@@ -35,6 +37,8 @@ namespace precise_driver
         _cmd_srv = driver_nh.advertiseService("command", &PreciseHWInterface::cmdCb, this);
         _open_gripper_srv = driver_nh.advertiseService("open_gripper", &PreciseHWInterface::openGripperCB, this);
         _close_gripper_srv = driver_nh.advertiseService("close_gripper", &PreciseHWInterface::closeGripperCB, this);
+
+        _switch_controller_srv = nh_.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
     }
 
     PreciseHWInterface::~PreciseHWInterface()
@@ -104,11 +108,15 @@ namespace precise_driver
     {
         enableWrite(false);
 
-        if(_device->freeMode(req.data))
-            res.success = true;
+        if(req.data)
+        {
+            res.success = resetController(false) && _device->freeMode(req.data);
+        }
         else
-            res.success = false;
-        resetController();
+        {
+            res.success = resetController(true) && _device->freeMode(req.data);
+        }
+
         enableWrite(true);
 
         return true;
@@ -199,16 +207,41 @@ namespace precise_driver
         return ret;
     }
 
-    void PreciseHWInterface::resetController()
+    bool PreciseHWInterface::resetController(bool active)
     {
+        controller_manager_msgs::SwitchController::Request req;
+        req.strictness = req.BEST_EFFORT;
+        if(active)
+            req.start_controllers.push_back("joint_trajectory_controller");
+        else
+            req.stop_controllers.push_back("joint_trajectory_controller");
+
+        controller_manager_msgs::SwitchController::Response res;
+        bool ret = _switch_controller_srv.call(req, res);
+
+        if(! (ret && res.ok))
+        {
+            ROS_ERROR("Can not switch (start/stop) joint_trajectory_controller");
+            return false;
+        }
+
+        pos_jnt_sat_interface_.reset();
+
         for(size_t i = 0; i < num_joints_; ++i)
         {
             joint_position_command_[i] = joint_position_[i];
+            ROS_INFO_STREAM("reset joint to: "<<joint_position_[i]);
 
-            try{  position_joint_interface_.getHandle(joint_names_[i]).setCommand(joint_position_command_[i]);  }
-            catch(const hardware_interface::HardwareInterfaceException&){}
-            pos_jnt_sat_interface_.reset();
+            try{
+                position_joint_interface_.getHandle(joint_names_[i]).setCommand(joint_position_[i]);
+            }
+            catch(const hardware_interface::HardwareInterfaceException&)
+            {
+                ROS_ERROR("can not set command for position_joint_jointerface");
+                return false;
+            }
         }
+        return (ret && res.ok);
     }
 
 } // namespace precise_driver
