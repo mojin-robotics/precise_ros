@@ -482,4 +482,9 @@ namespace precise_driver
             connection_->send(cmd);
         }
     }
+
+    void PFlexDevice::clearCommandQueue()
+    {
+        movej_queue_.clear();
+    }
 }

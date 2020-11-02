@@ -209,6 +209,7 @@ namespace precise_driver
 
     bool PreciseHWInterface::resetController(bool active)
     {
+        _device->clearCommandQueue();
         controller_manager_msgs::SwitchController::Request req;
         req.strictness = req.BEST_EFFORT;
         if(active)

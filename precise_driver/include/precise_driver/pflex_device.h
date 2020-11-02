@@ -66,6 +66,8 @@ namespace precise_driver
         bool operable();
         void update_movej();
 
+        void clearCommandQueue();
+
     private:
         std::shared_ptr<PreciseTCPInterface> connection_;
         std::shared_ptr<PreciseTCPInterface> status_connection_;
