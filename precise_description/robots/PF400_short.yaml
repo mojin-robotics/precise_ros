@@ -77,8 +77,8 @@ arm:
       yaw: 0.0
     limit:
       effort: 1000.0
-      lower: +0.051954  # m
-      upper: +0.070     # m
+      lower: +0.0365  # m
+      upper: +0.067   # m
       velocity: 0.05
   gripper_ee_fixed_joint:
     origin:
