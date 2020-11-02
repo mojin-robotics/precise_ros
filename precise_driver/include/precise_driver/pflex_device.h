@@ -49,7 +49,7 @@ namespace precise_driver
         int getSpeed(const int& profile_no);
         bool setHp(const bool& enabled, const int& timeout=0);
         bool getHp();
-        bool waitForEom(const double& timeout);
+        bool waitForEom();
         std::vector<double> getJointPositions();
         geometry_msgs::Pose getCartesianPosition();
         bool moveCartesian(const int& profile_no, const geometry_msgs::Pose& pose);

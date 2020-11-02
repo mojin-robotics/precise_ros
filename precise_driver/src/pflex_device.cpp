@@ -289,12 +289,13 @@ namespace precise_driver
     }
 
     //TODO: be aware, blocking operations are not allowed in the ros_control loop
-    bool PFlexDevice::waitForEom(const double& timeout)
+    bool PFlexDevice::waitForEom()
     {
         std::stringstream ss;
         ss << "waitForEom";
         Response res = connection_->send(ss.str());
-        return (res.error == 0);
+        //TODO for some reason waitForEom always returns error code -1501. Code is undocumented
+        return (res.error == -1501);
     }
 
     std::vector<double> PFlexDevice::getJointPositions()

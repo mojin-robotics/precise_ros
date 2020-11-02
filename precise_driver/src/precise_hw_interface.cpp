@@ -35,8 +35,9 @@ namespace precise_driver
         _home_srv = driver_nh.advertiseService("home", &PreciseHWInterface::homeCb, this);
         _power_srv = driver_nh.advertiseService("power", &PreciseHWInterface::powerCb, this);
         _cmd_srv = driver_nh.advertiseService("command", &PreciseHWInterface::cmdCb, this);
-        _open_gripper_srv = driver_nh.advertiseService("open_gripper", &PreciseHWInterface::openGripperCB, this);
-        _close_gripper_srv = driver_nh.advertiseService("close_gripper", &PreciseHWInterface::closeGripperCB, this);
+        _grasp_plate_srv = driver_nh.advertiseService("grasp_plate", &PreciseHWInterface::graspPlateCB, this);
+        _release_plate_srv = driver_nh.advertiseService("release_plate", &PreciseHWInterface::releasePlateCB, this);
+        _gripper_srv = driver_nh.advertiseService("gripper", &PreciseHWInterface::gripperCB, this);
 
         _switch_controller_srv = nh_.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
     }
@@ -169,24 +170,50 @@ namespace precise_driver
         return true;
     }
 
-    bool PreciseHWInterface::openGripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res)
+    bool PreciseHWInterface::graspPlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res)
     {
         enableWrite(false);
-        double range = joint_position_upper_limits_[4] - joint_position_lower_limits_[4];
-        int perc = (req.width / range) * 100;
-        res.success = _device->graspPlate(perc, req.speed, req.force);
-        resetController();
+        resetController(false);
+        //                                m to mm
+        res.success = _device->graspPlate(req.width*1000, req.speed, req.force);
+        resetController(true);
         enableWrite(true);
         return true;
     }
 
-    bool PreciseHWInterface::closeGripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res)
+    bool PreciseHWInterface::releasePlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res)
     {
         enableWrite(false);
-        double range = joint_position_upper_limits_[4] - joint_position_lower_limits_[4];
-        int perc = (req.width / range) * 100;
-        res.success = _device->releasePlate(req.width, req.speed, req.force);
-        resetController();
+        resetController(false);
+        res.success = _device->releasePlate(req.width*1000, req.speed, req.force);
+        resetController(true);
+        enableWrite(true);
+        return true;
+    }
+
+    bool PreciseHWInterface::gripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res)
+    {
+        enableWrite(false);
+        resetController(false);
+        double pos;
+        if(req.mode == req.MODE_PERCENT)
+        {
+            //linear interval transformation
+            //f(x) = min + ((max - min)/(b-a)) * (x - a)
+            double a, b, min, max;
+            a = 0.0; b = 1.0;
+            max = joint_position_lower_limits_[4]; min = joint_position_upper_limits_[4];
+            pos = min + ((max - min)/(b-a)) * (req.command - a);
+        }
+        else if(req.mode == req.MODE_POSITION)
+        {
+            pos = req.command;
+        }
+        std::vector<double> joints = joint_position_;
+        joints[4] = pos;
+        res.success = _device->moveJointSpace(_profile_no, joints);
+        res.success = _device->waitForEom();
+        resetController(true);
         enableWrite(true);
         return true;
     }

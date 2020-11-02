@@ -5,6 +5,7 @@
 #include <precise_driver/pflex_device.h>
 #include <precise_driver/precise_tcp_interface.h>
 #include <precise_driver/Gripper.h>
+#include <precise_driver/Plate.h>
 #include <ros/ros.h>
 
 #include <mutex>
@@ -35,8 +36,9 @@ namespace precise_driver
         ros::ServiceServer _power_srv;
         ros::ServiceServer _attach_srv;
         ros::ServiceServer _cmd_srv;
-        ros::ServiceServer _open_gripper_srv;
-        ros::ServiceServer _close_gripper_srv;
+        ros::ServiceServer _grasp_plate_srv;
+        ros::ServiceServer _release_plate_srv;
+        ros::ServiceServer _gripper_srv;
 
         ros::ServiceClient _switch_controller_srv;
 
@@ -62,8 +64,10 @@ namespace precise_driver
         bool attachCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
         bool cmdCb(cob_srvs::SetString::Request &req, cob_srvs::SetString::Response &res);
 
-        bool openGripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res);
-        bool closeGripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res);
+        bool gripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res);
+
+        bool graspPlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res);
+        bool releasePlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res);
     }; // class
 
 } // namespace precise_driver
