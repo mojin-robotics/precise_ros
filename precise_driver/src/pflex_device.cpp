@@ -453,6 +453,22 @@ namespace precise_driver
         }
     }
 
+    bool PFlexDevice::graspPlate(const int& width, const int& speed, const int& force)
+    {
+        std::stringstream ss;
+        ss << "graspPlate " << width << " " << speed << " "<< force;
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
+    }
+
+    bool PFlexDevice::releasePlate(const int& width, const int& speed, const int& force)
+    {
+        std::stringstream ss;
+        ss << "releasePlate " << width << " " << speed << " "<< force;
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
+    }
+
     void PFlexDevice::startMoveJThread()
     {
         movej_thread_ = std::thread{&PFlexDevice::update_movej, this};

@@ -33,6 +33,8 @@ namespace precise_driver
         _home_srv = driver_nh.advertiseService("home", &PreciseHWInterface::homeCb, this);
         _power_srv = driver_nh.advertiseService("power", &PreciseHWInterface::powerCb, this);
         _cmd_srv = driver_nh.advertiseService("command", &PreciseHWInterface::cmdCb, this);
+        _open_gripper_srv = driver_nh.advertiseService("open_gripper", &PreciseHWInterface::openGripperCB, this);
+        _close_gripper_srv = driver_nh.advertiseService("close_gripper", &PreciseHWInterface::closeGripperCB, this);
     }
 
     PreciseHWInterface::~PreciseHWInterface()
@@ -155,6 +157,28 @@ namespace precise_driver
         res.message = _device->command(req.data);
         res.success = true;
 
+        enableWrite(true);
+        return true;
+    }
+
+    bool PreciseHWInterface::openGripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res)
+    {
+        enableWrite(false);
+        double range = joint_position_upper_limits_[4] - joint_position_lower_limits_[4];
+        int perc = (req.width / range) * 100;
+        res.success = _device->graspPlate(perc, req.speed, req.force);
+        resetController();
+        enableWrite(true);
+        return true;
+    }
+
+    bool PreciseHWInterface::closeGripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res)
+    {
+        enableWrite(false);
+        double range = joint_position_upper_limits_[4] - joint_position_lower_limits_[4];
+        int perc = (req.width / range) * 100;
+        res.success = _device->releasePlate(req.width, req.speed, req.force);
+        resetController();
         enableWrite(true);
         return true;
     }

@@ -60,6 +60,9 @@ namespace precise_driver
         int getMode();
         bool setMode(const int& mode);
         std::string command(const std::string& cmd);
+        bool graspPlate(const int& width, const int& speed, const int& force);
+        bool releasePlate(const int& width, const int& speed, const int& force);
+
         bool operable();
         void update_movej();
 
