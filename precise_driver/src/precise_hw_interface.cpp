@@ -185,7 +185,8 @@ namespace precise_driver
     {
         enableWrite(false);
         resetController(false);
-        res.success = _device->releasePlate(req.width*1000, req.speed, req.force);
+        res.success = _device->releasePlate(req.width*1000, req.speed);
+        res.success = _device->waitForEom();
         resetController(true);
         enableWrite(true);
         return true;
@@ -211,8 +212,11 @@ namespace precise_driver
         }
         std::vector<double> joints = joint_position_;
         joints[4] = pos;
-        res.success = _device->moveJointSpace(_profile_no, joints);
-        res.success = _device->waitForEom();
+        bool ret;
+        ret = _device->moveJointSpace(_profile_no, joints);
+        ret &= _device->waitForEom();
+        res.success = ret;
+
         resetController(true);
         enableWrite(true);
         return true;
@@ -253,12 +257,9 @@ namespace precise_driver
             return false;
         }
 
-        pos_jnt_sat_interface_.reset();
-
         for(size_t i = 0; i < num_joints_; ++i)
         {
             joint_position_command_[i] = joint_position_[i];
-            ROS_INFO_STREAM("reset joint to: "<<joint_position_[i]);
 
             try{
                 position_joint_interface_.getHandle(joint_names_[i]).setCommand(joint_position_[i]);
@@ -269,6 +270,7 @@ namespace precise_driver
                 return false;
             }
         }
+        pos_jnt_sat_interface_.reset();
         return (ret && res.ok);
     }
 
