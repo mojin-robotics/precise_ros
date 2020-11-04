@@ -30,27 +30,27 @@ namespace precise_driver
         virtual void enforceLimits(ros::Duration &period);
 
     private:
-        ros::ServiceServer _init_srv;
-        ros::ServiceServer _teachmode_srv;
-        ros::ServiceServer _home_srv;
-        ros::ServiceServer _power_srv;
-        ros::ServiceServer _attach_srv;
-        ros::ServiceServer _cmd_srv;
-        ros::ServiceServer _grasp_plate_srv;
-        ros::ServiceServer _release_plate_srv;
-        ros::ServiceServer _gripper_srv;
+        ros::ServiceServer init_srv_;
+        ros::ServiceServer teachmode_srv_;
+        ros::ServiceServer home_srv_;
+        ros::ServiceServer power_srv_;
+        ros::ServiceServer attach_srv_;
+        ros::ServiceServer cmd_srv_;
+        ros::ServiceServer grasp_plate_srv_;
+        ros::ServiceServer release_plate_srv_;
+        ros::ServiceServer gripper_srv_;
 
-        ros::ServiceClient _switch_controller_srv;
+        ros::ServiceClient switch_controller_srv_;
 
-        std::shared_ptr<PFlexDevice> _device;
-        Profile _profile;
-        int _profile_no;
+        std::shared_ptr<PFlexDevice> device_;
+        Profile profile_;
+        int profile_no_;
 
-        std::mutex _mutex_init;
-        std::mutex _mutex_write;
-        std::condition_variable _cond_init;
+        std::mutex mutex_init_;
+        std::mutex mutex_write_;
+        std::condition_variable cond_init_;
 
-        bool _write_enabled;
+        bool write_enabled_;
 
         void enableWrite(bool value);
         bool isWriteEnabled();
