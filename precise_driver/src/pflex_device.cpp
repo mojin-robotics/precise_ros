@@ -17,19 +17,19 @@ namespace precise_driver
     {
         connection_ = connection;
         status_connection_ = status_connection;
-        movej_queue_.setMaxSize(2);
+        command_queue_.setMaxSize(2);
     }
 
     PFlexDevice::~PFlexDevice()
     {
         std::cout<<"exiting"<<std::endl;
-        movej_queue_.push(std::string("nop"));
-        movej_thread_.join();
+        command_queue_.push(std::string("nop"));
+        command_thread_.join();
         setHp(false);
         exit();
     }
 
-    bool PFlexDevice::init(const int& profile_no, const Profile& profile)
+    bool PFlexDevice::init(const int profile_no, const Profile profile)
     {
         //TODO: check for correct init routine
         ROS_INFO("initializing...");
@@ -85,33 +85,6 @@ namespace precise_driver
         return is_attached_;
     }
 
-    bool PFlexDevice::operable()
-    {
-        bool ret;
-        {
-            std::lock_guard<std::mutex> guard(mutex_state_data_);
-            ret = is_attached_ && is_homed_ && is_hp_ && !is_teachmode_;
-        }
-        return ret;
-    }
-
-    bool PFlexDevice::exit()
-    {
-        std::stringstream ss;
-        ss << "exit";
-        Response res = connection_->send(ss.str());
-        Response res2 = status_connection_->send(ss.str());
-        return (res.error == 0) && (res2.error == 0);
-    }
-
-    bool PFlexDevice::halt()
-    {
-        std::stringstream ss;
-        ss << "halt";
-        Response res = connection_->send(ss.str());
-        return (res.error == 0);
-    }
-
     bool PFlexDevice::home()
     {
         std::stringstream ss;
@@ -126,7 +99,85 @@ namespace precise_driver
         return res.success;
     }
 
-    bool PFlexDevice::attach(const bool& flag)
+    bool PFlexDevice::halt()
+    {
+        std::stringstream ss;
+        ss << "halt";
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
+    }
+
+    bool recover()
+    {
+
+    }
+
+    bool PFlexDevice::nop()
+    {
+        std::stringstream ss;
+        ss << "nop";
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
+    }
+
+    bool PFlexDevice::exit()
+    {
+        std::stringstream ss;
+        ss << "exit";
+        Response res = connection_->send(ss.str());
+        Response res2 = status_connection_->send(ss.str());
+        return (res.error == 0) && (res2.error == 0);
+    }
+
+    bool PFlexDevice::setHp(const bool enabled, const int timeout)
+    {
+        std::stringstream ss;
+        if(timeout != 0)
+            ss << "hp " << static_cast<int>(enabled) << " " << timeout;
+        else
+            ss << "hp " << static_cast<int>(enabled);
+        Response res = connection_->send(ss.str());
+
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            is_hp_ = res.success && enabled;
+        }
+
+        return (res.error == 0);
+    }
+
+    bool PFlexDevice::getHp()
+    {
+        std::stringstream ss;
+        ss << "hp";
+        Response res = connection_->send(ss.str());
+        return (bool)std::stoi(res.message);
+    }
+
+    int PFlexDevice::getSysState(const bool mute)
+    {
+        std::stringstream ss;
+        ss << "sysState " << static_cast<int>(mute);
+        Response res = connection_->send(ss.str());
+        if(res.message!="")
+            return std::stoi(res.message);
+        else
+            return res.error;
+    }
+
+    bool PFlexDevice::selectRobot(const int robot)
+    {
+        std::stringstream ss;
+        if(robot!=-1)
+            ss << "selectRobot "<< robot;
+        else
+            ss << "selectRobot";
+        Response res = connection_->send(ss.str());
+
+        return (res.error == 0);
+    }
+
+    bool PFlexDevice::attach(const bool flag)
     {
         std::stringstream ss;
         ss << "attach "<<static_cast<int>(flag);
@@ -140,15 +191,79 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::selectRobot(const int& robot)
+    //TODO: There is a freeMode command described the TCS Documentation
+    bool PFlexDevice::freeMode(const bool enabled)
     {
         std::stringstream ss;
-        if(robot!=-1)
-            ss << "selectRobot "<< robot;
+        if(enabled)
+            ss << "zeroTorque " << static_cast<int>(enabled)<<" 31"; //bitmask 1=axis1, 2=axis2, 4=axis3 ...
         else
-            ss << "selectRobot";
+            ss << "zeroTorque " << static_cast<int>(enabled);
+
         Response res = connection_->send(ss.str());
 
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            is_teachmode_ = res.success && enabled;
+        }
+
+        return (res.error == 0);
+    }
+
+    bool PFlexDevice::operational()
+    {
+        bool ret;
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            ret = is_attached_ && is_homed_ && is_hp_ && !is_teachmode_;
+        }
+        return ret;
+    }
+
+    int PFlexDevice::getMode()
+    {
+        std::stringstream ss;
+        ss << "mode";
+        Response res = connection_->send(ss.str());
+        return std::stoi(res.message);
+    }
+
+    bool PFlexDevice::setMode(const int mode)
+    {
+        std::stringstream ss;
+        ss << "mode " << mode;
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
+    }
+
+    Profile PFlexDevice::getProfile(const int profile_no)
+    {
+        std::stringstream ss;
+        ss << "profile " << profile_no;
+        Response res = connection_->send(ss.str());
+        ss.clear();
+        ss.str(res.message);
+        Profile profile;
+        ss >> profile.speed >> profile.speed2 >> profile.accel >> profile.decel >>
+            profile.accel_ramp >> profile.decel_ramp >> profile.in_range >> profile.straight;
+
+        return profile;
+    }
+
+    bool PFlexDevice::setProfile(const int profile_no, const Profile& profile)
+    {
+        std::stringstream ss;
+        ss << "profile " << profile_no << " "
+            << profile.speed << " "
+            << profile.speed2 << " "
+            << profile.accel << " "
+            << profile.decel << " "
+            << profile.accel_ramp << " "
+            << profile.decel_ramp << " "
+            << profile.in_range << " "
+            << profile.straight;
+
+        Response res = connection_->send(ss.str());
         return (res.error == 0);
     }
 
@@ -191,47 +306,8 @@ namespace precise_driver
         return pose;
     }
 
-    Profile PFlexDevice::getProfile(const int& profile_no)
-    {
-        std::stringstream ss;
-        ss << "profile " << profile_no;
-        Response res = connection_->send(ss.str());
-        ss.clear();
-        ss.str(res.message);
-        Profile profile;
-        ss >> profile.speed >> profile.speed2 >> profile.accel >> profile.decel >>
-            profile.accel_ramp >> profile.decel_ramp >> profile.in_range >> profile.straight;
-
-        return profile;
-    }
-
-    bool PFlexDevice::setProfile(const int& profile_no, const Profile& profile)
-    {
-        std::stringstream ss;
-        ss << "profile " << profile_no << " "
-            << profile.speed << " "
-            << profile.speed2 << " "
-            << profile.accel << " "
-            << profile.decel << " "
-            << profile.accel_ramp << " "
-            << profile.decel_ramp << " "
-            << profile.in_range << " "
-            << profile.straight;
-
-        Response res = connection_->send(ss.str());
-        return (res.error == 0);
-    }
-
-    bool PFlexDevice::nop()
-    {
-        std::stringstream ss;
-        ss << "nop";
-        Response res = connection_->send(ss.str());
-        return (res.error == 0);
-    }
-
     //TODO: is this important to us? do we need to know the weight of a plate?
-    bool PFlexDevice::setPayload(const int& payload)
+    bool PFlexDevice::setPayload(const int payload)
     {
         std::stringstream ss;
         ss << "payload " << payload;
@@ -247,7 +323,7 @@ namespace precise_driver
         return std::stoi(res.message);
     }
 
-    bool PFlexDevice::setSpeed(const int& profile_no, const int& speed)
+    bool PFlexDevice::setSpeed(const int profile_no, const int speed)
     {
         std::stringstream ss;
         ss << "speed " << profile_no << " " << speed;
@@ -255,47 +331,12 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    int PFlexDevice::getSpeed(const int& profile_no)
+    int PFlexDevice::getSpeed(const int profile_no)
     {
         std::stringstream ss;
         ss << "speed " << profile_no;
         Response res = connection_->send(ss.str());
         return std::stoi(res.message);
-    }
-
-    bool PFlexDevice::setHp(const bool& enabled, const int& timeout)
-    {
-        std::stringstream ss;
-        if(timeout != 0)
-            ss << "hp " << static_cast<int>(enabled) << " " << timeout;
-        else
-            ss << "hp " << static_cast<int>(enabled);
-        Response res = connection_->send(ss.str());
-
-        {
-            std::lock_guard<std::mutex> guard(mutex_state_data_);
-            is_hp_ = res.success && enabled;
-        }
-
-        return (res.error == 0);
-    }
-
-    bool PFlexDevice::getHp()
-    {
-        std::stringstream ss;
-        ss << "hp";
-        Response res = connection_->send(ss.str());
-        return (bool)std::stoi(res.message);
-    }
-
-    //TODO: be aware, blocking operations are not allowed in the ros_control loop
-    bool PFlexDevice::waitForEom()
-    {
-        std::stringstream ss;
-        ss << "waitForEom";
-        Response res = connection_->send(ss.str());
-        //TODO for some reason waitForEom always returns error code -1501. Code is undocumented
-        return (res.error == -1501);
     }
 
     std::vector<double> PFlexDevice::getJointPositions()
@@ -314,6 +355,42 @@ namespace precise_driver
                         std::multiplies<double>() );
 
         return joints;
+    }
+
+    bool PFlexDevice::moveJointPosition(const int profile_no, const std::vector<double>& joints)
+    {
+        std::vector<double> joints_transformed(joints.size());
+        std::transform(joints.begin(), joints.end(),
+                        transform_vec_.begin(), joints_transformed.begin(),
+                        std::divides<double>() );
+
+        std::stringstream ss;
+        ss.precision(3);
+        ss << "movej " << profile_no;
+        for(size_t i = 0; i < joints.size(); ++i)
+        {
+            ss << " " << std::fixed << joints_transformed[i];
+        }
+
+        Response res = connection_->send(ss.str());
+        return (res.error == 0);
+    }
+
+    bool PFlexDevice::queueJointPosition(const int profile_no, const std::vector<double>& joints)
+    {
+        std::vector<double> joints_transformed(joints.size());
+        std::transform(joints.begin(), joints.end(),
+                        transform_vec_.begin(), joints_transformed.begin(),
+                        std::divides<double>() );
+
+        std::stringstream ss;
+        ss.precision(3);
+        ss << "movej " << profile_no;
+        for(size_t i = 0; i < joints_transformed.size(); ++i)
+            ss << " " << std::fixed << joints_transformed[i];
+
+        command_queue_.push(ss.str());
+        return true;
     }
 
     //TODO: in what coordiation system are the cartesian positions? sync with urdf!
@@ -337,7 +414,7 @@ namespace precise_driver
     }
 
     //TODO: in what coordiation system are the cartesian positions? sync with urdf!
-    bool PFlexDevice::moveCartesian(const int& profile_no,  const geometry_msgs::Pose& pose)
+    bool PFlexDevice::moveCartesianPosition(const int profile_no, const geometry_msgs::Pose& pose)
     {
         std::stringstream ss;
         ss.precision(3);
@@ -359,86 +436,36 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::moveJointSpace(const int& profile_no, const std::vector<double>& joints)
+    //TODO: be aware, blocking operations are not allowed in the ros_control loop
+    bool PFlexDevice::waitForEom()
     {
-        std::vector<double> joints_transformed(joints.size());
-        std::transform(joints.begin(), joints.end(),
-                        transform_vec_.begin(), joints_transformed.begin(),
-                        std::divides<double>() );
-
         std::stringstream ss;
-        ss.precision(3);
-        ss << "movej " << profile_no;
-        for(size_t i = 0; i < joints.size(); ++i)
-        {
-            ss << " " << std::fixed << joints_transformed[i];
-        }
-
+        ss << "waitForEom";
         Response res = connection_->send(ss.str());
-        return (res.error == 0);
+        //TODO for some reason waitForEom always returns error code -1501. Code is undocumented
+        return (res.error == -1501);
     }
 
-    bool PFlexDevice::queueJointSpace(const int& profile_no, const std::vector<double>& joints)
+    bool PFlexDevice::graspPlate(const int width, const int speed, const double force)
     {
-        std::vector<double> joints_transformed(joints.size());
-        std::transform(joints.begin(), joints.end(),
-                        transform_vec_.begin(), joints_transformed.begin(),
-                        std::divides<double>() );
-
         std::stringstream ss;
-        ss.precision(3);
-        ss << "movej " << profile_no;
-        for(size_t i = 0; i < joints_transformed.size(); ++i)
-            ss << " " << std::fixed << joints_transformed[i];
-
-        movej_queue_.push(ss.str());
-        return true;
+        ss << "graspPlate " << width << " " << speed << " "<< force;
+        Response res = connection_->send(ss.str());
+        bool success = std::stoi(res.message) == -1;
+        return (res.error == 0 && success);
     }
 
-    //TODO: There is a freeMode command described the TCS Documentation
-    bool PFlexDevice::freeMode(const bool& enabled)
+    bool PFlexDevice::releasePlate(const int width, const int speed)
     {
         std::stringstream ss;
-        if(enabled)
-            ss << "zeroTorque " << static_cast<int>(enabled)<<" 31"; //bitmask 1=axis1, 2=axis2, 4=axis3 ...
+        ss << "releasePlate " << width << " " << speed;
+        Response res = connection_->send(ss.str());
+        bool success;
+        if(res.error == -1501 || res.error == 0)
+            success = true;
         else
-            ss << "zeroTorque " << static_cast<int>(enabled);
-
-        Response res = connection_->send(ss.str());
-
-        {
-            std::lock_guard<std::mutex> guard(mutex_state_data_);
-            is_teachmode_ = res.success && enabled;
-        }
-
-        return (res.error == 0);
-    }
-
-    int PFlexDevice::getSysState(const bool& mute)
-    {
-        std::stringstream ss;
-        ss << "sysState " << static_cast<int>(mute);
-        Response res = connection_->send(ss.str());
-        if(res.message!="")
-            return std::stoi(res.message);
-        else
-            return res.error;
-    }
-
-    int PFlexDevice::getMode()
-    {
-        std::stringstream ss;
-        ss << "mode";
-        Response res = connection_->send(ss.str());
-        return std::stoi(res.message);
-    }
-
-    bool PFlexDevice::setMode(const int& mode)
-    {
-        std::stringstream ss;
-        ss << "mode " << mode;
-        Response res = connection_->send(ss.str());
-        return (res.error == 0);
+            success = false;
+        return success;
     }
 
     std::string PFlexDevice::command(const std::string& cmd)
@@ -454,44 +481,22 @@ namespace precise_driver
         }
     }
 
-    bool PFlexDevice::graspPlate(const int& width, const int& speed, const double& force)
+    void PFlexDevice::startCommandThread()
     {
-        std::stringstream ss;
-        ss << "graspPlate " << width << " " << speed << " "<< force;
-        Response res = connection_->send(ss.str());
-        bool success = std::stoi(res.message) == -1;
-        return (res.error == 0 && success);
-    }
-
-    bool PFlexDevice::releasePlate(const int& width, const int& speed)
-    {
-        std::stringstream ss;
-        ss << "releasePlate " << width << " " << speed;
-        Response res = connection_->send(ss.str());
-        bool success;
-        if(res.error == -1501 || res.error == 0)
-            success = true;
-        else
-            success = false;
-        return success;
-    }
-
-    void PFlexDevice::startMoveJThread()
-    {
-        movej_thread_ = std::thread{&PFlexDevice::update_movej, this};
-    }
-
-    void PFlexDevice::update_movej()
-    {
-        while(ros::ok())
-        {
-            std::string cmd = movej_queue_.pop();
-            connection_->send(cmd);
-        }
+        command_thread_ = std::thread{&PFlexDevice::updateCommand, this};
     }
 
     void PFlexDevice::clearCommandQueue()
     {
-        movej_queue_.clear();
+        command_queue_.clear();
+    }
+
+    void PFlexDevice::updateCommand()
+    {
+        while(ros::ok())
+        {
+            std::string cmd = command_queue_.pop();
+            connection_->send(cmd);
+        }
     }
 }

@@ -78,10 +78,10 @@ namespace precise_driver
         // Safety
         enforceLimits(elapsed_time);
 
-        if(isWriteEnabled() && _device->operable())
+        if(isWriteEnabled() && _device->operational())
         {
-            //_device->moveJointSpace(_profile_no, joint_position_command_);
-            _device->queueJointSpace(_profile_no, joint_position_command_);
+            //_device->moveJointPosition(_profile_no, joint_position_command_);
+            _device->queueJointPosition(_profile_no, joint_position_command_);
         }
     }
 
@@ -95,7 +95,7 @@ namespace precise_driver
         enableWrite(false);
         if(_device->init(_profile_no, _profile) && _device->home())
         {
-            _device->startMoveJThread();
+            _device->startCommandThread();
             res.success = true;
             _cond_init.notify_one();
         }
@@ -213,7 +213,7 @@ namespace precise_driver
         std::vector<double> joints = joint_position_;
         joints[4] = pos;
         bool ret;
-        ret = _device->moveJointSpace(_profile_no, joints);
+        ret = _device->moveJointPosition(_profile_no, joints);
         ret &= _device->waitForEom();
         res.success = ret;
 
