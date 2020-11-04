@@ -1,4 +1,4 @@
-#include <precise_driver/precise_tcp_interface.h>
+#include <precise_driver/device/tcp_client.h>
 #include <ros/ros.h>
 
 using namespace boost::asio;
@@ -6,7 +6,7 @@ using ip::tcp;
 
 namespace precise_driver
 {
-    PreciseTCPInterface::PreciseTCPInterface(const std::string &ip, const unsigned &port)
+    TCPClient::TCPClient(const std::string &ip, const unsigned &port)
     {
         _connected = false;
         _ip = ip;
@@ -14,7 +14,7 @@ namespace precise_driver
         _socket.reset(new boost::asio::ip::tcp::socket(_io_service));
     }
 
-    void PreciseTCPInterface::connect()
+    void TCPClient::connect()
     {
         if (!_connected)
         {
@@ -35,7 +35,7 @@ namespace precise_driver
         }
     }
 
-    void PreciseTCPInterface::disconnect()
+    void TCPClient::disconnect()
     {
         if (_connected)
         {
@@ -44,7 +44,7 @@ namespace precise_driver
         }
     }
 
-    Response PreciseTCPInterface::send(const std::string &data)
+    Response TCPClient::send(const std::string &data)
     {
         std::lock_guard<std::mutex> guard(this->_comm_mutex);
         if (!_connected)

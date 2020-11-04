@@ -2,8 +2,8 @@
 
 #include <realtime_tools/realtime_publisher.h>
 #include <ros_control_boilerplate/generic_hw_interface.h>
-#include <precise_driver/pflex_device.h>
-#include <precise_driver/precise_tcp_interface.h>
+#include <precise_driver/device/device.h>
+#include <precise_driver/device/tcp_client.h>
 #include <precise_driver/Gripper.h>
 #include <precise_driver/Plate.h>
 #include <ros/ros.h>
@@ -42,7 +42,7 @@ namespace precise_driver
 
         ros::ServiceClient switch_controller_srv_;
 
-        std::shared_ptr<PFlexDevice> device_;
+        std::shared_ptr<Device> device_;
         Profile profile_;
         int profile_no_;
 

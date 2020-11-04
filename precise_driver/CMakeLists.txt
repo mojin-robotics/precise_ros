@@ -37,7 +37,7 @@ catkin_package(
 ## Build
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_library(precise_hw_interface src/pflex_device.cpp src/precise_hw_interface.cpp src/precise_tcp_interface.cpp)
+add_library(precise_hw_interface src/device/device.cpp src/device/tcp_client.cpp src/precise_hw_interface.cpp)
 add_dependencies(precise_hw_interface ${catkin_EXPORTED_TARGETS})
 target_link_libraries(precise_hw_interface ${catkin_LIBRARIES})
 

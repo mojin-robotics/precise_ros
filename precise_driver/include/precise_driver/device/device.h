@@ -1,7 +1,7 @@
 #pragma once
 
-#include <precise_driver/precise_tcp_interface.h>
-#include <precise_driver/queue.h>
+#include <precise_driver/device/tcp_client.h>
+#include <precise_driver/device/queue.h>
 
 #include <iostream>
 #include <vector>
@@ -23,14 +23,14 @@ namespace precise_driver
         int straight;
     };
 
-    class PFlexDevice
+    class Device
     {
     public:
         //contruct driver
-        explicit PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection,
-                    std::shared_ptr<PreciseTCPInterface> status_connection);
+        explicit Device(std::shared_ptr<TCPClient> connection,
+                    std::shared_ptr<TCPClient> status_connection);
         //destruct driver
-        ~PFlexDevice();
+        ~Device();
 
 
         //basic commands
@@ -152,8 +152,8 @@ namespace precise_driver
         void clearCommandQueue();
 
     private:
-        std::shared_ptr<PreciseTCPInterface> connection_;
-        std::shared_ptr<PreciseTCPInterface> status_connection_;
+        std::shared_ptr<TCPClient> connection_;
+        std::shared_ptr<TCPClient> status_connection_;
 
         bool is_attached_;
         bool is_hp_;

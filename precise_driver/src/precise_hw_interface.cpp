@@ -27,8 +27,8 @@ namespace precise_driver
         pnh.param<int>("in_range", profile_.in_range, profile_.in_range);
         pnh.param<int>("straight", profile_.straight, profile_.straight);
 
-        device_.reset(new PFlexDevice(std::make_shared<PreciseTCPInterface>(ip, control_port),
-                                std::make_shared<PreciseTCPInterface>(ip, status_port)));
+        device_.reset(new Device(std::make_shared<TCPClient>(ip, control_port),
+                                std::make_shared<TCPClient>(ip, status_port)));
 
         init_srv_ = driver_nh.advertiseService("init", &PreciseHWInterface::initCb, this);
         teachmode_srv_ = driver_nh.advertiseService("teach_mode", &PreciseHWInterface::teachmodeCb, this);

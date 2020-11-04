@@ -1,4 +1,4 @@
-#include <precise_driver/pflex_device.h>
+#include <precise_driver/device/device.h>
 #include <sstream>
 #include <string>
 
@@ -12,15 +12,15 @@
 
 namespace precise_driver
 {
-    PFlexDevice::PFlexDevice(std::shared_ptr<PreciseTCPInterface> connection,
-                            std::shared_ptr<PreciseTCPInterface> status_connection)
+    Device::Device(std::shared_ptr<TCPClient> connection,
+                            std::shared_ptr<TCPClient> status_connection)
     {
         connection_ = connection;
         status_connection_ = status_connection;
         command_queue_.setMaxSize(2);
     }
 
-    PFlexDevice::~PFlexDevice()
+    Device::~Device()
     {
         std::cout<<"exiting"<<std::endl;
         command_queue_.push(std::string("nop"));
@@ -29,7 +29,7 @@ namespace precise_driver
         exit();
     }
 
-    bool PFlexDevice::init(const int profile_no, const Profile profile)
+    bool Device::init(const int profile_no, const Profile profile)
     {
         //TODO: check for correct init routine
         ROS_INFO("initializing...");
@@ -85,7 +85,7 @@ namespace precise_driver
         return is_attached_;
     }
 
-    bool PFlexDevice::home()
+    bool Device::home()
     {
         std::stringstream ss;
         ss << "home";
@@ -99,7 +99,7 @@ namespace precise_driver
         return res.success;
     }
 
-    bool PFlexDevice::halt()
+    bool Device::halt()
     {
         std::stringstream ss;
         ss << "halt";
@@ -112,7 +112,7 @@ namespace precise_driver
 
     }
 
-    bool PFlexDevice::nop()
+    bool Device::nop()
     {
         std::stringstream ss;
         ss << "nop";
@@ -120,7 +120,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::exit()
+    bool Device::exit()
     {
         std::stringstream ss;
         ss << "exit";
@@ -129,7 +129,7 @@ namespace precise_driver
         return (res.error == 0) && (res2.error == 0);
     }
 
-    bool PFlexDevice::setHp(const bool enabled, const int timeout)
+    bool Device::setHp(const bool enabled, const int timeout)
     {
         std::stringstream ss;
         if(timeout != 0)
@@ -146,7 +146,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::getHp()
+    bool Device::getHp()
     {
         std::stringstream ss;
         ss << "hp";
@@ -154,7 +154,7 @@ namespace precise_driver
         return (bool)std::stoi(res.message);
     }
 
-    int PFlexDevice::getSysState(const bool mute)
+    int Device::getSysState(const bool mute)
     {
         std::stringstream ss;
         ss << "sysState " << static_cast<int>(mute);
@@ -165,7 +165,7 @@ namespace precise_driver
             return res.error;
     }
 
-    bool PFlexDevice::selectRobot(const int robot)
+    bool Device::selectRobot(const int robot)
     {
         std::stringstream ss;
         if(robot!=-1)
@@ -177,7 +177,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::attach(const bool flag)
+    bool Device::attach(const bool flag)
     {
         std::stringstream ss;
         ss << "attach "<<static_cast<int>(flag);
@@ -192,7 +192,7 @@ namespace precise_driver
     }
 
     //TODO: There is a freeMode command described the TCS Documentation
-    bool PFlexDevice::freeMode(const bool enabled)
+    bool Device::freeMode(const bool enabled)
     {
         std::stringstream ss;
         if(enabled)
@@ -210,7 +210,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::operational()
+    bool Device::operational()
     {
         bool ret;
         {
@@ -220,7 +220,7 @@ namespace precise_driver
         return ret;
     }
 
-    int PFlexDevice::getMode()
+    int Device::getMode()
     {
         std::stringstream ss;
         ss << "mode";
@@ -228,7 +228,7 @@ namespace precise_driver
         return std::stoi(res.message);
     }
 
-    bool PFlexDevice::setMode(const int mode)
+    bool Device::setMode(const int mode)
     {
         std::stringstream ss;
         ss << "mode " << mode;
@@ -236,7 +236,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    Profile PFlexDevice::getProfile(const int profile_no)
+    Profile Device::getProfile(const int profile_no)
     {
         std::stringstream ss;
         ss << "profile " << profile_no;
@@ -250,7 +250,7 @@ namespace precise_driver
         return profile;
     }
 
-    bool PFlexDevice::setProfile(const int profile_no, const Profile& profile)
+    bool Device::setProfile(const int profile_no, const Profile& profile)
     {
         std::stringstream ss;
         ss << "profile " << profile_no << " "
@@ -267,7 +267,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::setBase(const geometry_msgs::Pose& pose)
+    bool Device::setBase(const geometry_msgs::Pose& pose)
     {
         std::stringstream ss;
         tf::Quaternion quat;
@@ -287,7 +287,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    geometry_msgs::Pose PFlexDevice::getBase()
+    geometry_msgs::Pose Device::getBase()
     {
         std::stringstream ss;
         ss << "setBase";
@@ -307,7 +307,7 @@ namespace precise_driver
     }
 
     //TODO: is this important to us? do we need to know the weight of a plate?
-    bool PFlexDevice::setPayload(const int payload)
+    bool Device::setPayload(const int payload)
     {
         std::stringstream ss;
         ss << "payload " << payload;
@@ -315,7 +315,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    int PFlexDevice::getPayload()
+    int Device::getPayload()
     {
         std::stringstream ss;
         ss << "payload";
@@ -323,7 +323,7 @@ namespace precise_driver
         return std::stoi(res.message);
     }
 
-    bool PFlexDevice::setSpeed(const int profile_no, const int speed)
+    bool Device::setSpeed(const int profile_no, const int speed)
     {
         std::stringstream ss;
         ss << "speed " << profile_no << " " << speed;
@@ -331,7 +331,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    int PFlexDevice::getSpeed(const int profile_no)
+    int Device::getSpeed(const int profile_no)
     {
         std::stringstream ss;
         ss << "speed " << profile_no;
@@ -339,7 +339,7 @@ namespace precise_driver
         return std::stoi(res.message);
     }
 
-    std::vector<double> PFlexDevice::getJointPositions()
+    std::vector<double> Device::getJointPositions()
     {
         std::stringstream ss;
         ss << "wherej";
@@ -357,7 +357,7 @@ namespace precise_driver
         return joints;
     }
 
-    bool PFlexDevice::moveJointPosition(const int profile_no, const std::vector<double>& joints)
+    bool Device::moveJointPosition(const int profile_no, const std::vector<double>& joints)
     {
         std::vector<double> joints_transformed(joints.size());
         std::transform(joints.begin(), joints.end(),
@@ -376,7 +376,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool PFlexDevice::queueJointPosition(const int profile_no, const std::vector<double>& joints)
+    bool Device::queueJointPosition(const int profile_no, const std::vector<double>& joints)
     {
         std::vector<double> joints_transformed(joints.size());
         std::transform(joints.begin(), joints.end(),
@@ -394,7 +394,7 @@ namespace precise_driver
     }
 
     //TODO: in what coordiation system are the cartesian positions? sync with urdf!
-    geometry_msgs::Pose PFlexDevice::getCartesianPosition()
+    geometry_msgs::Pose Device::getCartesianPosition()
     {
         std::stringstream ss;
         ss << "wherec";
@@ -414,7 +414,7 @@ namespace precise_driver
     }
 
     //TODO: in what coordiation system are the cartesian positions? sync with urdf!
-    bool PFlexDevice::moveCartesianPosition(const int profile_no, const geometry_msgs::Pose& pose)
+    bool Device::moveCartesianPosition(const int profile_no, const geometry_msgs::Pose& pose)
     {
         std::stringstream ss;
         ss.precision(3);
@@ -437,7 +437,7 @@ namespace precise_driver
     }
 
     //TODO: be aware, blocking operations are not allowed in the ros_control loop
-    bool PFlexDevice::waitForEom()
+    bool Device::waitForEom()
     {
         std::stringstream ss;
         ss << "waitForEom";
@@ -446,7 +446,7 @@ namespace precise_driver
         return (res.error == -1501);
     }
 
-    bool PFlexDevice::graspPlate(const int width, const int speed, const double force)
+    bool Device::graspPlate(const int width, const int speed, const double force)
     {
         std::stringstream ss;
         ss << "graspPlate " << width << " " << speed << " "<< force;
@@ -455,7 +455,7 @@ namespace precise_driver
         return (res.error == 0 && success);
     }
 
-    bool PFlexDevice::releasePlate(const int width, const int speed)
+    bool Device::releasePlate(const int width, const int speed)
     {
         std::stringstream ss;
         ss << "releasePlate " << width << " " << speed;
@@ -468,7 +468,7 @@ namespace precise_driver
         return success;
     }
 
-    std::string PFlexDevice::command(const std::string& cmd)
+    std::string Device::command(const std::string& cmd)
     {
         Response res = connection_->send(cmd);
         if(res.error == 0)
@@ -481,17 +481,17 @@ namespace precise_driver
         }
     }
 
-    void PFlexDevice::startCommandThread()
+    void Device::startCommandThread()
     {
-        command_thread_ = std::thread{&PFlexDevice::updateCommand, this};
+        command_thread_ = std::thread{&Device::updateCommand, this};
     }
 
-    void PFlexDevice::clearCommandQueue()
+    void Device::clearCommandQueue()
     {
         command_queue_.clear();
     }
 
-    void PFlexDevice::updateCommand()
+    void Device::updateCommand()
     {
         while(ros::ok())
         {
