@@ -54,6 +54,9 @@ namespace precise_driver
         //closes the connection from manipulator side
         bool exit();
 
+        //reads the robot state from the communication thread
+        bool updateRobotState();
+
         //enables actuatur power
         bool setHp(const bool enabled, const int timeout=0);
         //get state of manipulator power up
@@ -159,6 +162,7 @@ namespace precise_driver
         bool is_hp_;
         bool is_homed_;
         bool is_teachmode_;
+        int sys_state_;
 
         std::mutex mutex_state_data_;
 

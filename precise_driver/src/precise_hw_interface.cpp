@@ -71,6 +71,7 @@ namespace precise_driver
         {
             joint_position_[i] = joints[i];
         }
+        device_->updateRobotState();
     }
 
     void PreciseHWInterface::write(ros::Duration &elapsed_time)

@@ -130,6 +130,28 @@ namespace precise_driver
         return (res.error == 0) && (res2.error == 0);
     }
 
+    bool Device::updateRobotState()
+    {
+        std::stringstream ss;
+        ss << "hp";
+        Response res = status_connection_->send(ss.str());
+        bool hp = static_cast<bool>(std::stoi(res.message));
+        ss.str("");
+        ss.clear();
+        ss << "sysState";
+        res = status_connection_->send(ss.str());
+        int sys_state;
+        if(res.message!="")
+            sys_state = std::stoi(res.message);
+
+        std::lock_guard<std::mutex> guard(mutex_state_data_);
+        {
+            is_hp_ = hp;
+            sys_state_ = sys_state;
+        }
+        return true;
+    }
+
     bool Device::setHp(const bool enabled, const int timeout)
     {
         std::stringstream ss;
@@ -216,7 +238,7 @@ namespace precise_driver
         bool ret;
         {
             std::lock_guard<std::mutex> guard(mutex_state_data_);
-            ret = is_attached_ && is_homed_ && is_hp_ && !is_teachmode_;
+            ret = is_attached_ && is_homed_ && is_hp_ && !is_teachmode_ && (sys_state_ == 21);
         }
         return ret;
     }
