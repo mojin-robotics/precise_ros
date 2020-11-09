@@ -31,6 +31,7 @@ namespace precise_driver
 
     private:
         ros::ServiceServer init_srv_;
+        ros::ServiceServer recover_srv_;
         ros::ServiceServer teachmode_srv_;
         ros::ServiceServer home_srv_;
         ros::ServiceServer power_srv_;
@@ -58,6 +59,7 @@ namespace precise_driver
         bool resetController(bool active);
 
         bool initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+        bool recoverCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
         bool teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
         bool homeCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
         bool powerCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);

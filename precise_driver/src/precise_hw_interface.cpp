@@ -31,6 +31,7 @@ namespace precise_driver
                                 std::make_shared<TCPClient>(ip, status_port)));
 
         init_srv_ = driver_nh.advertiseService("init", &PreciseHWInterface::initCb, this);
+        recover_srv_ = driver_nh.advertiseService("recover", &PreciseHWInterface::recoverCb, this);
         teachmode_srv_ = driver_nh.advertiseService("teach_mode", &PreciseHWInterface::teachmodeCb, this);
         home_srv_ = driver_nh.advertiseService("home", &PreciseHWInterface::homeCb, this);
         power_srv_ = driver_nh.advertiseService("power", &PreciseHWInterface::powerCb, this);
@@ -110,6 +111,24 @@ namespace precise_driver
         }
         else
             res.success = false;
+        enableWrite(true);
+        return true;
+    }
+
+    bool PreciseHWInterface::recoverCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
+    {
+        //Wait for hardware to init
+        ROS_INFO("Try recover arm");
+        enableWrite(false);
+
+        resetController(false);
+
+        if(device_->recover())
+            res.success = true;
+        else
+            res.success = false;
+
+        resetController(true);
         enableWrite(true);
         return true;
     }

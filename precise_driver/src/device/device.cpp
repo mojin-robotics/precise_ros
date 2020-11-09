@@ -108,9 +108,12 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool recover()
+    bool Device::recover()
     {
-
+        nop();
+        bool ret = setHp(true, 5);
+        ret &= attach(true);
+        return ret;
     }
 
     bool Device::nop()
@@ -159,8 +162,8 @@ namespace precise_driver
             ss << "hp " << static_cast<int>(enabled) << " " << timeout;
         else
             ss << "hp " << static_cast<int>(enabled);
-        Response res = connection_->send(ss.str());
 
+        Response res = connection_->send(ss.str());
         {
             std::lock_guard<std::mutex> guard(mutex_state_data_);
             is_hp_ = res.success && enabled;
@@ -173,17 +176,28 @@ namespace precise_driver
     {
         std::stringstream ss;
         ss << "hp";
+        bool is_hp = false;
         Response res = connection_->send(ss.str());
-        return (bool)std::stoi(res.message);
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            is_hp = static_cast<bool>(std::stoi(res.message));
+        }
+        return is_hp;
     }
 
     int Device::getSysState(const bool mute)
     {
         std::stringstream ss;
         ss << "sysState " << static_cast<int>(mute);
-        Response res = connection_->send(ss.str());
+        Response res = status_connection_->send(ss.str());
         if(res.message!="")
-            return std::stoi(res.message);
+        {
+            {
+                std::lock_guard<std::mutex> guard(mutex_state_data_);
+                sys_state_ = std::stoi(res.message);
+            }
+            return sys_state_;
+        }
         else
             return res.error;
     }
