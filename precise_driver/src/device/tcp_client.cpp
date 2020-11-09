@@ -52,7 +52,7 @@ namespace precise_driver
 
         boost::system::error_code error;
 
-        ROS_DEBUG_STREAM("sending to "<<_ip<<":"<<_port<<": "<<data);
+        ROS_DEBUG_STREAM_NAMED("tcp_client","sending to "<<_ip<<":"<<_port<<": "<<data);
 
         // Send
         boost::asio::write(*_socket.get(), boost::asio::buffer(data + "\n"), error);
@@ -81,7 +81,7 @@ namespace precise_driver
                 throw boost::system::system_error(error);
         }
 
-        ROS_DEBUG_STREAM("received from "<<_ip<<":"<<_port<<": "<<result);
+        ROS_DEBUG_STREAM_NAMED("tcp_client","received from "<<_ip<<":"<<_port<<": "<<result);
 
         Response res;
         std::stringstream ss;

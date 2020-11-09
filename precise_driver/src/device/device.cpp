@@ -46,40 +46,40 @@ namespace precise_driver
             return false;
         }
 
-        ROS_DEBUG("selecting Robot 1 on status connection");
+        ROS_DEBUG_NAMED("device","selecting Robot 1 on status connection");
         status_connection_->send("selectRobot 1");
-        ROS_DEBUG("Robot 1 selected");
+        ROS_DEBUG_NAMED("device","Robot 1 selected");
 
-        ROS_DEBUG("setting Mode to 0");
+        ROS_DEBUG_NAMED("device","setting Mode to 0");
         setMode(0);
 
         //test connection
-        ROS_DEBUG("testing connection...");
+        ROS_DEBUG_NAMED("device","testing connection...");
         if(!nop())
         {
             ROS_ERROR("connection test failed");
             return false;
         }
-        ROS_DEBUG("success");
+        ROS_DEBUG_NAMED("device","success");
 
-        int sysState = getSysState(true);
-        ROS_DEBUG_STREAM("SysState is: "<<sysState);
+        sys_state_ = getSysState(true);
+        ROS_DEBUG_STREAM_NAMED("device","SysState is: "<<sys_state_);
 
-        ROS_DEBUG("detach");
+        ROS_DEBUG_NAMED("device","detach");
         is_attached_ = attach(false);
 
-        ROS_DEBUG("set High Power");
+        ROS_DEBUG_NAMED("device","set High Power");
         if(!setHp(true, 10))
         {
             ROS_ERROR("Could not Power Robot");
             return false;
         }
 
-        sysState = getSysState(true);
-        ROS_DEBUG_STREAM("SysState is: "<<sysState);
-
         setProfile(profile_no, profile);
         is_attached_ = attach(true);
+
+        sys_state_ = getSysState(true);
+        ROS_DEBUG_STREAM_NAMED("device","SysState is: "<<sys_state_);
 
         ROS_INFO("initialized");
 
