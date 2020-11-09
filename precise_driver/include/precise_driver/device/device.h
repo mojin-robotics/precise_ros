@@ -62,7 +62,10 @@ namespace precise_driver
         //get state of manipulator power up
         bool getHp();
 
-        //get manipulators SystemState as an enum (TODO: implement enum)
+        //returns manipulators SystemState as an integer
+        //TODO: implement status code as enum class (check documentation for codes)
+        //special node: get's status from status_communication_thread (decoupled from command communication)
+        //TODO: parse to ros diagnostics, consider in operational(...) function
         int getSysState(const bool mute);
 
         //selects the manipulator to control (in case multiple manipulators should be controlled over the the same connection (daisy chain))
