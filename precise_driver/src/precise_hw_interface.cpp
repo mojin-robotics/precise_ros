@@ -65,6 +65,7 @@ namespace precise_driver
 
     void PreciseHWInterface::read(ros::Duration &elapsed_time)
     {
+        ros::Time start = ros::Time::now();
         std::vector<double> joints = device_->getJointPositions();
 
         for(size_t i = 0; i < num_joints_; i++)
@@ -72,10 +73,14 @@ namespace precise_driver
             joint_position_[i] = joints[i];
         }
         device_->updateRobotState();
+        ros::Time end = ros::Time::now();
+        ROS_DEBUG_STREAM_NAMED("precise_hw_interface","duration read: "<<(end-start).toSec());
+        ROS_DEBUG_STREAM_NAMED("precise_hw_interface","elapsed read: "<<elapsed_time.toSec());
     }
 
     void PreciseHWInterface::write(ros::Duration &elapsed_time)
     {
+        ros::Time start = ros::Time::now();
         // Safety
         enforceLimits(elapsed_time);
 
@@ -84,6 +89,9 @@ namespace precise_driver
             //device_->moveJointPosition(_profile_no, joint_position_command_);
             device_->queueJointPosition(profile_no_, joint_position_command_);
         }
+        ros::Time end = ros::Time::now();
+        ROS_DEBUG_STREAM_NAMED("precise_hw_interface","duration write: "<<(end-start).toSec());
+        ROS_DEBUG_STREAM_NAMED("precise_hw_interface","elapsed write: "<<elapsed_time.toSec());
     }
 
     void PreciseHWInterface::enforceLimits(ros::Duration &period)
