@@ -11,19 +11,21 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>angles</depend>
-  <depend>actionlib_msgs</depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+
   <depend>cob_srvs</depend>
   <depend>controller_manager_msgs</depend>
   <depend>geometry_msgs</depend>
-  <depend>message_generation</depend>
   <depend>realtime_tools</depend>
   <depend>ros_control_boilerplate</depend>
-  <depend>std_msgs</depend>
+  <depend>roscpp</depend>
   <depend>std_srvs</depend>
+  <depend>tf</depend>
 
   <exec_depend>controller_manager</exec_depend>
-  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>joint_state_controller</exec_depend>
+  <exec_depend>position_controllers</exec_depend>
   <exec_depend>precise_description</exec_depend>
 
   <test_depend>roslaunch</test_depend>

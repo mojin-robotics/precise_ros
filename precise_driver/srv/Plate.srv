@@ -1,5 +1,6 @@
-float32 width #the width of the plate
-uint8 speed #between 0 and 100
-float32 force #max gripper squezze force in Nt. positive value = close gripper to grasp, negative value = open gripper to grasp
+float32 width   #the width of the plate
+uint8 speed     #between 0 and 100%
+float32 force   #max gripper squeeze force in N.
+                #positive value = close gripper to grasp, negative value = open gripper to grasp
 ---
 bool success

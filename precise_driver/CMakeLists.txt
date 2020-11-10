@@ -4,16 +4,15 @@ project(precise_driver)
 add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
-  actionlib_msgs
-  angles
   cob_srvs
   controller_manager_msgs
   geometry_msgs
   message_generation
   realtime_tools
   ros_control_boilerplate
-  std_msgs
+  roscpp
   std_srvs
+  tf
 )
 
 add_service_files(
@@ -24,25 +23,21 @@ add_service_files(
 
 generate_messages(
   DEPENDENCIES
-  actionlib_msgs
-  controller_manager_msgs
-  geometry_msgs
-  std_msgs
 )
 
 catkin_package(
-  CATKIN_DEPENDS actionlib_msgs cob_srvs controller_manager_msgs geometry_msgs message_runtime std_msgs std_srvs
+  CATKIN_DEPENDS cob_srvs controller_manager_msgs geometry_msgs message_runtime roscpp std_srvs tf
 )
 
 ## Build
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(precise_hw_interface src/device/device.cpp src/device/tcp_client.cpp src/precise_hw_interface.cpp)
-add_dependencies(precise_hw_interface ${catkin_EXPORTED_TARGETS})
+add_dependencies(precise_hw_interface ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(precise_hw_interface ${catkin_LIBRARIES})
 
 add_executable(precise_hw_node src/precise_hw_node.cpp)
-add_dependencies(precise_hw_node ${catkin_EXPORTED_TARGETS})
+add_dependencies(precise_hw_node ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(precise_hw_node precise_hw_interface ${catkin_LIBRARIES})
 
 ## Install

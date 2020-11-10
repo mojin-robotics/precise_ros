@@ -3,7 +3,6 @@
 #include <string>
 
 #include <ros/ros.h>
-#include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Quaternion.h>
 #include <tf/transform_datatypes.h>
 
@@ -32,7 +31,6 @@ namespace precise_driver
 
     bool Device::init(const int profile_no, const Profile profile)
     {
-        //TODO: check for correct init routine
         ROS_INFO("initializing...");
 
         //connect to robot
