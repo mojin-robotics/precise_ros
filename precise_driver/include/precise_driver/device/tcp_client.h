@@ -14,10 +14,10 @@ namespace precise_driver
         int error;
     };
 
-    class PreciseTCPInterface
+    class TCPClient
     {
     public:
-        PreciseTCPInterface(const std::string &ip, const unsigned &port);
+        TCPClient(const std::string &ip, const unsigned &port);
 
         void connect();
         void disconnect();

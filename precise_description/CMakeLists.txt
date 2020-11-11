@@ -11,8 +11,8 @@ install(DIRECTORY config launch meshes robots urdf
 )
 
 set(robot_list
-  PF3400
-  PF400
+  PF400_long
+  PF400_short
 )
 
 if(CATKIN_ENABLE_TESTING)

@@ -1,0 +1,6 @@
+uint8 MODE_POSITION=0 #use joint position mode
+uint8 MODE_PERCENT=1 #0.0=gripper fully opened, 1.0=gripper fully closed
+uint8 mode
+float32 command
+---
+bool success

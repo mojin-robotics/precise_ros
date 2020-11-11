@@ -4,7 +4,7 @@
   <xacro:include filename="$(find precise_description)/urdf/materials.xacro"/>
   <xacro:include filename="$(find precise_description)/urdf/transmission.xacro" />
 
-  <xacro:macro name="precise_flex" params="parent name *origin">
+  <xacro:macro name="precise_flex" params="parent name *origin has_podest:=True">
 
     <xacro:property name="origin_1_joint">
       <origin xyz="${robot_properties['arm']['arm_1_joint']['origin']['x']} ${robot_properties['arm']['arm_1_joint']['origin']['y']} ${robot_properties['arm']['arm_1_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_1_joint']['origin']['roll']} ${robot_properties['arm']['arm_1_joint']['origin']['pitch']} ${robot_properties['arm']['arm_1_joint']['origin']['yaw']}"/>
@@ -46,67 +46,92 @@
     <joint name="${name}_base_joint" type="fixed">
       <xacro:insert_block name="origin" />
       <parent link="${parent}"/>
-      <child link="z_column" />
+      <child link="${name}_base_link" />
     </joint>
+    <link name="${name}_base_link">
+      <xacro:default_inertial/>
+    </link>
+    <joint name="${name}_mount_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${name}_base_link"/>
+      <child link="${name}_1_link"/>
+    </joint>
+
+    <xacro:if value="${has_podest}">
+      <joint name="${name}_podest_joint" type="fixed">
+        <origin xyz="0 0 -0.0096" rpy="0 0 0"/>
+        <parent link="${name}_base_link"/>
+        <child link="${name}_podest_link"/>
+      </joint>
+      <link name="${name}_podest_link">
+        <xacro:default_inertial/>
+        <visual>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+            <mesh filename="${robot_properties['arm']['arm_podest_link']['visual_mesh']}"/>
+          </geometry>
+        </visual>
+      </link>
+    </xacro:if>
 
 
     <!-- Links -->
-    <link name="z_column">
+    <link name="${name}_1_link">
       <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Z_Column.STL"/>
+          <mesh filename="${robot_properties['arm']['arm_1_link']['visual_mesh']}"/>
         </geometry>
         <material name="white"/>
       </visual>
     </link>
 
-    <link name="z_carriage">
+    <link name="${name}_2_link">
       <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Z_Carriage.STL"/>
+          <mesh filename="${robot_properties['arm']['arm_2_link']['visual_mesh']}"/>
         </geometry>
         <material name="white"/>
       </visual>
     </link>
 
-    <link name="inner_link">
+    <link name="${name}_3_link">
       <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Inner_Link.STL"/>
+          <mesh filename="${robot_properties['arm']['arm_3_link']['visual_mesh']}"/>
         </geometry>
         <material name="white"/>
       </visual>
     </link>
 
-    <link name="outer_link">
+    <link name="${name}_4_link">
       <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Outer_Link.STL"/>
+          <mesh filename="${robot_properties['arm']['arm_4_link']['visual_mesh']}"/>
         </geometry>
         <material name="white"/>
       </visual>
     </link>
 
-    <link name="hand">
+    <link name="${name}_5_link">
       <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/PF3400_Hand.STL"/>
+          <mesh filename="${robot_properties['arm']['arm_5_link']['visual_mesh']}"/>
         </geometry>
         <material name="white"/>
       </visual>
     </link>
 
-    <link name="left_finger">
+    <link name="${name}_left_finger">
       <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -117,7 +142,7 @@
       </visual>
     </link>
 
-    <link name="right_finger">
+    <link name="${name}_right_finger">
       <xacro:default_inertial/>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -130,48 +155,48 @@
 
     <!-- Joints -->
     <joint name="${name}_1_joint" type="prismatic">
-      <parent link="z_column"/>
-      <child link="z_carriage"/>
+      <parent link="${name}_1_link"/>
+      <child link="${name}_2_link"/>
       <axis xyz="0 0 1"/>
       <xacro:insert_block name="origin_1_joint"/>
       <xacro:insert_block name="limit_1_joint"/>
     </joint>
 
     <joint name="${name}_2_joint" type="revolute">
-      <parent link="z_carriage"/>
-      <child link="inner_link"/>
+      <parent link="${name}_2_link"/>
+      <child link="${name}_3_link"/>
       <axis xyz="0 0 1"/>
       <xacro:insert_block name="origin_2_joint"/>
       <xacro:insert_block name="limit_2_joint"/>
     </joint>
 
     <joint name="${name}_3_joint" type="revolute">
-      <parent link="inner_link"/>
-      <child link="outer_link"/>
+      <parent link="${name}_3_link"/>
+      <child link="${name}_4_link"/>
       <axis xyz="0 0 1"/>
       <xacro:insert_block name="origin_3_joint"/>
       <xacro:insert_block name="limit_3_joint"/>
     </joint>
 
     <joint name="${name}_4_joint" type="revolute">
-      <parent link="outer_link"/>
-      <child link="hand"/>
+      <parent link="${name}_4_link"/>
+      <child link="${name}_5_link"/>
       <axis xyz="0 0 1"/>
       <xacro:insert_block name="origin_4_joint"/>
       <xacro:insert_block name="limit_4_joint"/>
     </joint>
 
     <joint name="${name}_5_joint" type="prismatic">
-      <parent link="hand"/>
-      <child link="left_finger"/>
+      <parent link="${name}_5_link"/>
+      <child link="${name}_left_finger"/>
       <axis xyz="0 1 0"/>
       <xacro:insert_block name="origin_5_joint"/>
       <xacro:insert_block name="limit_5_joint"/>
     </joint>
 
     <joint name="${name}_5_mimic_joint" type="prismatic">
-      <parent link="hand"/>
-      <child link="right_finger"/>
+      <parent link="${name}_5_link"/>
+      <child link="${name}_right_finger"/>
       <axis xyz="0 -1 0"/>
       <xacro:insert_block name="origin_5_joint"/>
       <xacro:insert_block name="limit_5_joint"/>
@@ -182,10 +207,12 @@
     <!-- endeffector -->
     <joint name="gripper_ee_fixed_joint" type="fixed">
       <xacro:insert_block name="origin_gripper_ee_fixed_joint"/>
-      <parent link="hand"/>
+      <parent link="${name}_5_link"/>
       <child link="gripper_ee_fixed_link" />
     </joint>
-    <link name="gripper_ee_fixed_link"/>
+    <link name="gripper_ee_fixed_link">
+      <xacro:default_inertial/>
+    </link>
 
     <!-- extensions -->
     <xacro:precise_flex_transmission name="${name}"/>

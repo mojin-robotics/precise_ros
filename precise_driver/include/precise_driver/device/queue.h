@@ -56,6 +56,13 @@ public:
         cond_.notify_one();
     }
 
+    void clear()
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        while(queue_.size() > 0)
+            queue_.pop();
+    }
+
     void setMaxSize(int size)
     {
         max_size_ = size;

@@ -1,0 +1,90 @@
+arm:
+  arm_podest_link:
+    visual_mesh: package://precise_description/meshes/arm_podest_link.STL
+  arm_1_link:
+    visual_mesh: package://precise_description/meshes/arm_1_link.STL
+  arm_2_link:
+    visual_mesh: package://precise_description/meshes/arm_2_link.STL
+  arm_3_link:
+    visual_mesh: package://precise_description/meshes/arm_3_link_ext.STL
+  arm_4_link:
+    visual_mesh: package://precise_description/meshes/arm_4_link_ext.STL
+  arm_5_link:
+    visual_mesh: package://precise_description/meshes/arm_5_link.STL
+  left_finger:
+    visual_mesh: package://precise_description/meshes/mrk_finger.STL
+  right_finger:
+    visual_mesh: package://precise_description/meshes/mrk_finger.STL
+  arm_1_joint:
+    origin:
+      x:  0.0
+      y:  0.0
+      z:  0.17282
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: 0.0015  # m
+      upper: 0.750  # m - 401,5mm standard, 750 mm, 1160 mm
+      velocity: 0.5
+  arm_2_joint:
+    origin:
+      x:  0.0
+      y:  0.0
+      z:  0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: -1.57079632679  # -90
+      upper: +1.57079632679  # +90
+      velocity: 6.2831
+  arm_3_joint:
+    origin:
+      x:  0.302
+      y:  0.0
+      z: -0.065675
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: +0.25  # +13<
+      upper: +6.00  # +347<
+      velocity: 12.5664
+  arm_4_joint:
+    origin:
+      x:  0.289
+      y:  0.0
+      z: -0.040178
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: -16.9296937443  # -970
+      upper: +16.9296937443  # +970
+      velocity: 12.5664
+  arm_5_joint:
+    origin:
+      x:  0.0805
+      y:  0.0
+      z:  0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+    limit:
+      effort: 1000.0
+      lower: +0.0365  # m
+      upper: +0.067   # m
+      velocity: 0.05
+  gripper_ee_fixed_joint:
+    origin:
+      x:  0.0805
+      y:  0.0
+      z:  0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
