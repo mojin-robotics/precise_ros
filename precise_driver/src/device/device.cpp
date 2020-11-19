@@ -478,7 +478,7 @@ namespace precise_driver
         ss << "waitForEom";
         Response res = connection_->send(ss.str());
         //TODO for some reason waitForEom always returns error code -1501. Code is undocumented
-        return (res.error == -1501);
+        return (res.error == -1501)||(res.error == 0);
     }
 
     bool Device::graspPlate(const int width, const int speed, const double force)
