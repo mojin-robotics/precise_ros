@@ -15,14 +15,14 @@ env:
     - CMAKE_ARGS=-DCMAKE_BUILD_TYPE=Release
     - NOT_TEST_DOWNSTREAM=true
     - PYLINT_ARGS="--output-format=parseable --errors-only"
-    - PYLINT2_CHECK=true
-    - PYLINT3_CHECK=true
+    - PYLINT2_CHECK=true  # pylint2 for kinetic, pylint3 for noetic
+    - PYLINT3_CHECK=false
     - ROS_REPO=ros
     - VERBOSE_OUTPUT=false
     - VERBOSE_TESTS=false
   matrix:
     - ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=file
-    - ROS_DISTRO=melodic
+    - ROS_DISTRO=noetic
 install:
   - git clone --quiet --depth 1 https://github.com/fmessmer/industrial_ci.git .industrial_ci -b master_pylint
 script:
