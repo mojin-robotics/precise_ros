@@ -15,6 +15,8 @@
 #include <std_srvs/SetBool.h>
 #include <cob_srvs/SetString.h>
 
+#include <control_msgs/FollowJointTrajectoryActionGoal.h>
+
 namespace precise_driver
 {
 
@@ -70,6 +72,13 @@ namespace precise_driver
 
         bool graspPlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res);
         bool releasePlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res);
+
+    //Doosan like Hack
+    private:
+        bool doosan_hack_enabled_;
+        ros::Subscriber sub_follow_joint_goal;
+        void followJointTrajectoryActionGoalCB(const control_msgs::FollowJointTrajectoryActionGoalConstPtr &msg);
+
     }; // class
 
 } // namespace precise_driver
