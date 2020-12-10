@@ -80,11 +80,27 @@ arm:
       lower: +0.0365  # m
       upper: +0.067   # m
       velocity: 0.05
-  gripper_ee_fixed_joint:
+  arm_ee_joint:
     origin:
       x:  0.0805
       y:  0.0
       z:  0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+  gripper_ee_fixed_joint:
+    origin:
+      x:  0.0660
+      y:  0.0
+      z: -0.0600
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+  gripper_ee_joint:
+    origin:
+      x:  0.0660
+      y:  0.0
+      z: -0.0600
       roll: 0.0
       pitch: 0.0
       yaw: 0.0
