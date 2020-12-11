@@ -203,6 +203,7 @@ namespace precise_driver
         resetController(false);
         //                                m to mm
         res.success = device_->graspPlate(req.width*1000, req.speed, req.force);
+        ros::Duration(0.25).sleep();
         resetController(true);
         enableWrite(true);
         return true;

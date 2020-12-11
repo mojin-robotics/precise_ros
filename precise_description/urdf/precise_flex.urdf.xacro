@@ -21,8 +21,14 @@
     <xacro:property name="origin_5_joint">
       <origin xyz="${robot_properties['arm']['arm_5_joint']['origin']['x']} ${robot_properties['arm']['arm_5_joint']['origin']['y']} ${robot_properties['arm']['arm_5_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_5_joint']['origin']['roll']} ${robot_properties['arm']['arm_5_joint']['origin']['pitch']} ${robot_properties['arm']['arm_5_joint']['origin']['yaw']}"/>
     </xacro:property>
+    <xacro:property name="origin_ee_joint">
+      <origin xyz="${robot_properties['arm']['arm_ee_joint']['origin']['x']} ${robot_properties['arm']['arm_ee_joint']['origin']['y']} ${robot_properties['arm']['arm_ee_joint']['origin']['z']}" rpy="${robot_properties['arm']['arm_ee_joint']['origin']['roll']} ${robot_properties['arm']['arm_ee_joint']['origin']['pitch']} ${robot_properties['arm']['arm_ee_joint']['origin']['yaw']}"/>
+    </xacro:property>
     <xacro:property name="origin_gripper_ee_fixed_joint">
       <origin xyz="${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['x']} ${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['y']} ${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['z']}" rpy="${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['roll']} ${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['pitch']} ${robot_properties['arm']['gripper_ee_fixed_joint']['origin']['yaw']}"/>
+    </xacro:property>
+    <xacro:property name="origin_gripper_ee_joint">
+      <origin xyz="${robot_properties['arm']['gripper_ee_joint']['origin']['x']} ${robot_properties['arm']['gripper_ee_joint']['origin']['y']} ${robot_properties['arm']['gripper_ee_joint']['origin']['z']}" rpy="${robot_properties['arm']['gripper_ee_joint']['origin']['roll']} ${robot_properties['arm']['gripper_ee_joint']['origin']['pitch']} ${robot_properties['arm']['gripper_ee_joint']['origin']['yaw']}"/>
     </xacro:property>
 
     <xacro:property name="limit_1_joint">
@@ -71,6 +77,12 @@
             <mesh filename="${robot_properties['arm']['arm_podest_link']['visual_mesh']}"/>
           </geometry>
         </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+            <mesh filename="${robot_properties['arm']['arm_podest_link']['visual_mesh']}"/>
+          </geometry>
+        </collision>
       </link>
     </xacro:if>
 
@@ -85,6 +97,13 @@
         </geometry>
         <material name="white"/>
       </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${robot_properties['arm']['arm_1_link']['visual_mesh']}"/>
+        </geometry>
+        <material name="white"/>
+      </collision>
     </link>
 
     <link name="${name}_2_link">
@@ -96,6 +115,13 @@
         </geometry>
         <material name="white"/>
       </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${robot_properties['arm']['arm_2_link']['visual_mesh']}"/>
+        </geometry>
+        <material name="white"/>
+      </collision>
     </link>
 
     <link name="${name}_3_link">
@@ -107,6 +133,13 @@
         </geometry>
         <material name="white"/>
       </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${robot_properties['arm']['arm_3_link']['visual_mesh']}"/>
+        </geometry>
+        <material name="white"/>
+      </collision>
     </link>
 
     <link name="${name}_4_link">
@@ -118,6 +151,13 @@
         </geometry>
         <material name="white"/>
       </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${robot_properties['arm']['arm_4_link']['visual_mesh']}"/>
+        </geometry>
+        <material name="white"/>
+      </collision>
     </link>
 
     <link name="${name}_5_link">
@@ -129,6 +169,13 @@
         </geometry>
         <material name="white"/>
       </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${robot_properties['arm']['arm_5_link']['visual_mesh']}"/>
+        </geometry>
+        <material name="white"/>
+      </collision>
     </link>
 
     <link name="${name}_left_finger">
@@ -140,6 +187,13 @@
         </geometry>
         <material name="aluminum"/>
       </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${robot_properties['arm']['left_finger']['visual_mesh']}"/>
+        </geometry>
+        <material name="aluminum"/>
+      </collision>
     </link>
 
     <link name="${name}_right_finger">
@@ -151,6 +205,13 @@
         </geometry>
         <material name="aluminum"/>
       </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${robot_properties['arm']['right_finger']['visual_mesh']}"/>
+        </geometry>
+        <material name="aluminum"/>
+      </collision>
     </link>
 
     <!-- Joints -->
@@ -203,14 +264,31 @@
       <mimic joint="${name}_5_joint" multiplier="1"/>
     </joint>
 
-
     <!-- endeffector -->
+    <joint name="${name}_ee_joint" type="fixed">
+      <xacro:insert_block name="origin_ee_joint"/>
+      <parent link="${name}_5_link"/>
+      <child link="${name}_ee_link" />
+    </joint>
+    <link name="${name}_ee_link">
+      <xacro:default_inertial/>
+    </link>
+
     <joint name="gripper_ee_fixed_joint" type="fixed">
       <xacro:insert_block name="origin_gripper_ee_fixed_joint"/>
-      <parent link="${name}_5_link"/>
+      <parent link="${name}_ee_link"/>
       <child link="gripper_ee_fixed_link" />
     </joint>
     <link name="gripper_ee_fixed_link">
+      <xacro:default_inertial/>
+    </link>
+
+    <joint name="gripper_ee_joint" type="fixed">
+      <xacro:insert_block name="origin_gripper_ee_joint"/>
+      <parent link="${name}_ee_link"/>
+      <child link="gripper_ee_link" />
+    </joint>
+    <link name="gripper_ee_link">
       <xacro:default_inertial/>
     </link>
 
