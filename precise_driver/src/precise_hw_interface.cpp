@@ -322,6 +322,7 @@ namespace precise_driver
         for(auto point : msg->goal.trajectory.points)
         {
             bool ret;
+            point.positions.push_back(joint_position_.back());
             ret = device_->moveJointPosition(profile_no_, point.positions);
         }
     }
