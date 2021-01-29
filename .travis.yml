@@ -17,7 +17,7 @@ env:
     - PYLINT_ARGS="--output-format=parseable --errors-only"
     - PYLINT2_CHECK=true  # pylint2 for kinetic, pylint3 for noetic
     - PYLINT3_CHECK=false
-    - ROS_REPO=ros
+    - ROS_REPO=main
     - VERBOSE_OUTPUT=false
     - VERBOSE_TESTS=false
   matrix:
