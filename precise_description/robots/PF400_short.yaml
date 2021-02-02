@@ -11,10 +11,6 @@ arm:
     visual_mesh: package://precise_description/meshes/arm_4_link.STL
   arm_5_link:
     visual_mesh: package://precise_description/meshes/arm_5_link.STL
-  left_finger:
-    visual_mesh: package://precise_description/meshes/mrk_finger.STL
-  right_finger:
-    visual_mesh: package://precise_description/meshes/mrk_finger.STL
   arm_1_joint:
     origin:
       x:  0.0
@@ -85,22 +81,6 @@ arm:
       x:  0.0805
       y:  0.0
       z:  0.0
-      roll: 0.0
-      pitch: 0.0
-      yaw: 0.0
-  gripper_ee_fixed_joint:
-    origin:
-      x:  0.0660
-      y:  0.0
-      z: -0.0600
-      roll: 0.0
-      pitch: 0.0
-      yaw: 0.0
-  gripper_ee_joint:
-    origin:
-      x:  0.0660
-      y:  0.0
-      z: -0.0600
       roll: 0.0
       pitch: 0.0
       yaw: 0.0

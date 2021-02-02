@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="gripper" params="name parent parent_left_finger parent_right_finger *origin *origin_left_finger *origin_right_finger">
+
+    <joint name="${name}_ee_fixed_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="${name}_ee_fixed_link" />
+    </joint>
+    <link name="${name}_ee_fixed_link">
+      <xacro:default_inertial/>
+    </link>
+
+    <joint name="${name}_ee_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="${name}_ee_link" />
+    </joint>
+    <link name="${name}_ee_link">
+      <xacro:default_inertial/>
+    </link>
+
+    <joint name="${name}_left_finger_joint" type="fixed">
+      <parent link="${parent_left_finger}"/>
+      <child link="${name}_left_finger"/>
+      <xacro:insert_block name="origin_left_finger"/>
+    </joint>
+    <link name="${name}_left_finger">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
+        </geometry>
+        <material name="aluminum"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
+        </geometry>
+        <material name="aluminum"/>
+      </collision>
+    </link>
+
+    <joint name="${name}_right_finger_joint" type="fixed">
+      <parent link="${parent_right_finger}"/>
+      <child link="${name}_right_finger"/>
+      <xacro:insert_block name="origin_right_finger"/>
+    </joint>
+    <link name="${name}_right_finger">
+      <xacro:default_inertial/>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
+        </geometry>
+        <material name="aluminum"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
+        </geometry>
+        <material name="aluminum"/>
+      </collision>
+    </link>
+
+  </xacro:macro>
+
+</robot>

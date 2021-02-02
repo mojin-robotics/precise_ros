@@ -178,40 +178,12 @@
       </collision>
     </link>
 
-    <link name="${name}_left_finger">
+    <link name="${name}_left_finger_mount_link">
       <xacro:default_inertial/>
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="${robot_properties['arm']['left_finger']['visual_mesh']}"/>
-        </geometry>
-        <material name="aluminum"/>
-      </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="${robot_properties['arm']['left_finger']['visual_mesh']}"/>
-        </geometry>
-        <material name="aluminum"/>
-      </collision>
     </link>
 
-    <link name="${name}_right_finger">
+    <link name="${name}_right_finger_mount_link">
       <xacro:default_inertial/>
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="${robot_properties['arm']['right_finger']['visual_mesh']}"/>
-        </geometry>
-        <material name="aluminum"/>
-      </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="${robot_properties['arm']['right_finger']['visual_mesh']}"/>
-        </geometry>
-        <material name="aluminum"/>
-      </collision>
     </link>
 
     <!-- Joints -->
@@ -249,7 +221,7 @@
 
     <joint name="${name}_5_joint" type="prismatic">
       <parent link="${name}_5_link"/>
-      <child link="${name}_left_finger"/>
+      <child link="${name}_left_finger_mount_link"/>
       <axis xyz="0 1 0"/>
       <xacro:insert_block name="origin_5_joint"/>
       <xacro:insert_block name="limit_5_joint"/>
@@ -257,7 +229,7 @@
 
     <joint name="${name}_5_mimic_joint" type="prismatic">
       <parent link="${name}_5_link"/>
-      <child link="${name}_right_finger"/>
+      <child link="${name}_right_finger_mount_link"/>
       <axis xyz="0 -1 0"/>
       <xacro:insert_block name="origin_5_joint"/>
       <xacro:insert_block name="limit_5_joint"/>
@@ -271,24 +243,6 @@
       <child link="${name}_ee_link" />
     </joint>
     <link name="${name}_ee_link">
-      <xacro:default_inertial/>
-    </link>
-
-    <joint name="gripper_ee_fixed_joint" type="fixed">
-      <xacro:insert_block name="origin_gripper_ee_fixed_joint"/>
-      <parent link="${name}_ee_link"/>
-      <child link="gripper_ee_fixed_link" />
-    </joint>
-    <link name="gripper_ee_fixed_link">
-      <xacro:default_inertial/>
-    </link>
-
-    <joint name="gripper_ee_joint" type="fixed">
-      <xacro:insert_block name="origin_gripper_ee_joint"/>
-      <parent link="${name}_ee_link"/>
-      <child link="gripper_ee_link" />
-    </joint>
-    <link name="gripper_ee_link">
       <xacro:default_inertial/>
     </link>
 
