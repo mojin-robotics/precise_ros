@@ -13,8 +13,7 @@ jobs:
     env:
       ADDITIONAL_DEBS: 'apt-utils curl dialog git-core openssh-client openssh-server wget'
       AFTER_SCRIPT: 'rosenv bash .travis.xacro_test.sh'
-      AFTER_INIT: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts && ssh-keyscan github.com >> ~/.ssh/known_hosts && git config --global url."https://token:${{secrets.GITHUBPAT}}@github.com/".insteadOf "git@github.com:" && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && apt-get install git-lfs -y && cd $HOME && git lfs install && cd -
-      BEFORE_PREPARE_DOCKER_IMAGE: echo ${{secrets.GITHUBPAT}} | docker login ghcr.io -u mojin-robotics-ci --password-stdin
+      AFTER_INIT: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts && ssh-keyscan github.com >> ~/.ssh/known_hosts && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && apt-get install git-lfs -y && cd $HOME && git lfs install && cd -
       CATKIN_LINT: pedantic
       CATKIN_LINT_ARGS: '--ignore description_boilerplate'
       CMAKE_ARGS: -DCMAKE_BUILD_TYPE=Release
@@ -23,18 +22,15 @@ jobs:
       PYLINT2_CHECK: true  # pylint2 for kinetic, pylint3 for noetic
       PYLINT3_CHECK: false
       ROS_REPO: main
-      SECRET_AVAILABLE: ${{secrets.GITHUBPAT}}
       VERBOSE_OUTPUT: false
       VERBOSE_TESTS: false
     strategy:
       matrix:
         env:
           - { ROS_DISTRO: kinetic,
-              DOCKER_IMAGE: 'ghcr.io/mojin-robotics/mojin-ros:kinetic-full',
               UPSTREAM_WORKSPACE: '.ci.rosinstall.kinetic'
             }
-          - { ROS_DISTRO: noetic,
-              DOCKER_IMAGE: 'ghcr.io/mojin-robotics/mojin-ros:noetic-full'
+          - { ROS_DISTRO: noetic
             }
     name: ${{matrix.env.ROS_DISTRO}}
     runs-on: ubuntu-latest
@@ -45,5 +41,4 @@ jobs:
       - name: Checkout LFS objects
         run: git lfs checkout
       - uses: 'fmessmer/industrial_ci@master_pylint'
-        if: ${{ env.SECRET_AVAILABLE }} # prevents failure notifications if secret GITHUBPAT is not available
         env: ${{matrix.env}}
