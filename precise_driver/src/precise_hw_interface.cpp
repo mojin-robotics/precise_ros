@@ -5,7 +5,7 @@
 namespace precise_driver
 {
     PreciseHWInterface::PreciseHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
-        : ros_control_boilerplate::GenericHWInterface(nh, urdf_model)
+        : ros_control_boilerplate::GenericHWInterface(nh, urdf_model), doosan_hack_enabled_(false)
     {
         ros::NodeHandle pnh(nh_, "hardware_interface");
         ros::NodeHandle driver_nh(nh_, "driver");
@@ -40,6 +40,12 @@ namespace precise_driver
         gripper_srv_ = driver_nh.advertiseService("gripper", &PreciseHWInterface::gripperCB, this);
 
         switch_controller_srv_ = nh_.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
+
+        //Doosan like hack
+        pnh.param<bool>("doosan_hack_enabled", doosan_hack_enabled_, doosan_hack_enabled_);
+        sub_follow_joint_goal = driver_nh.subscribe<control_msgs::FollowJointTrajectoryActionGoal>
+                                    ("/arm/joint_trajectory_controller/follow_joint_trajectory/goal", 1, 
+                                    &PreciseHWInterface::followJointTrajectoryActionGoalCB, this);
     }
 
     PreciseHWInterface::~PreciseHWInterface()
@@ -265,6 +271,8 @@ namespace precise_driver
 
     bool PreciseHWInterface::isWriteEnabled()
     {
+        if(doosan_hack_enabled_)
+            return false;
         bool ret;
         {
             std::lock_guard<std::mutex> guard(mutex_write_);
@@ -307,6 +315,16 @@ namespace precise_driver
         }
         pos_jnt_sat_interface_.reset();
         return (ret && res.ok);
+    }
+
+    void PreciseHWInterface::followJointTrajectoryActionGoalCB(const control_msgs::FollowJointTrajectoryActionGoalConstPtr &msg)
+    {
+        for(auto point : msg->goal.trajectory.points)
+        {
+            bool ret;
+            point.positions.push_back(joint_position_.back());
+            ret = device_->moveJointPosition(profile_no_, point.positions);
+        }
     }
 
 } // namespace precise_driver
