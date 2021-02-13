@@ -7,4 +7,4 @@ Status: [![Build Status](https://travis-ci.com/mojin-robotics/precise_ros.svg?br
 
 ## GitHub Actions - Continuous Integration
 
-CI-Status ```kinetic-devel```: [![Build Status](https://github.com/mojin-robotics/precise_ros/workflows/CI/badge.svg?branch=kinetic-devel)](https://github.com/mojin-robotics/precise_ros/actions?query=workflow%3ACI)
+CI-Status ```kinetic-devel```: [![Build Status](https://github.com/mojin-robotics/precise_ros/workflows/CI/badge.svg?branch=kinetic-devel)](https://github.com/mojin-robotics/precise_ros/actions?query=workflow%3ACI+branch%3Akinetic-devel)

@@ -8,22 +8,18 @@ notifications:
     on_failure: always
 env:
   global:
-    - ADDITIONAL_DEBS='apt-utils curl dialog wget'
+    - ADDITIONAL_DEBS='apt-utils dialog'
     - AFTER_SCRIPT='rosenv bash .travis.xacro_test.sh'
     - CATKIN_LINT=pedantic
     - CATKIN_LINT_ARGS='--ignore description_boilerplate'
     - CMAKE_ARGS=-DCMAKE_BUILD_TYPE=Release
-    - NOT_TEST_DOWNSTREAM=true
-    - PYLINT_ARGS="--output-format=parseable --errors-only"
-    - PYLINT2_CHECK=true  # pylint2 for kinetic, pylint3 for noetic
-    - PYLINT3_CHECK=false
+    - PYLINT_ARGS='--output-format=parseable --errors-only'
+    - PYLINT_CHECK=true
     - ROS_REPO=main
-    - VERBOSE_OUTPUT=false
-    - VERBOSE_TESTS=false
   matrix:
     - ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=.ci.rosinstall.kinetic
     - ROS_DISTRO=noetic
 install:
-  - git clone --quiet --depth 1 https://github.com/fmessmer/industrial_ci.git .industrial_ci -b master_pylint
+  - git clone --quiet --depth 1 https://github.com/ros-industrial/industrial_ci.git .industrial_ci -b master
 script:
   - .industrial_ci/travis.sh

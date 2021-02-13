@@ -4,41 +4,54 @@ on:
   push:
   pull_request:
 #  schedule:
-#    - cron: "0 23 * * *" # everyday at 11pm
-
+#    - cron: "0 0 * * 0" # every Sunday at midnight
+  workflow_dispatch:
 
 jobs:
   industrial_ci:
+    if: github.event.pull_request.draft == false  # only run on non-draft PRs
+    runs-on: ubuntu-latest
     timeout-minutes: 60
+
     env:
-      ADDITIONAL_DEBS: 'apt-utils curl dialog git-core openssh-client openssh-server wget'
+      ADDITIONAL_DEBS: 'apt-utils dialog'
       AFTER_SCRIPT: 'rosenv bash .travis.xacro_test.sh'
-      AFTER_INIT: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts && ssh-keyscan github.com >> ~/.ssh/known_hosts && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && apt-get install git-lfs -y && cd $HOME && git lfs install && cd -
       CATKIN_LINT: pedantic
       CATKIN_LINT_ARGS: '--ignore description_boilerplate'
+      CCACHE_DIR: /github/home/.ccache  # Directory for ccache (and how we enable ccache in industrial_ci)
       CMAKE_ARGS: -DCMAKE_BUILD_TYPE=Release
-      NOT_TEST_DOWNSTREAM: true
-      PYLINT_ARGS: "--output-format=parseable --errors-only"
-      PYLINT2_CHECK: true  # pylint2 for kinetic, pylint3 for noetic
-      PYLINT3_CHECK: false
+      PYLINT_ARGS: '--output-format=parseable --errors-only'
+      PYLINT_CHECK: true
       ROS_REPO: main
-      VERBOSE_OUTPUT: false
-      VERBOSE_TESTS: false
+      SECRET_AVAILABLE: ${{secrets.GITHUBPAT}}
+      UNDERLAY: '/root/git/care-o-bot/devel'  # workspace on docker image
+
     strategy:
       matrix:
-        env:
-          - { ROS_DISTRO: kinetic,
-              UPSTREAM_WORKSPACE: '.ci.rosinstall.kinetic'
-            }
-          - { ROS_DISTRO: noetic
-            }
-    name: ${{matrix.env.ROS_DISTRO}}
-    runs-on: ubuntu-latest
+        include:
+          - { ROS_DISTRO: kinetic, DOCKER_IMAGE: 'ghcr.io/mojin-robotics/mojin-ros:kinetic-full' }
+          - { ROS_DISTRO: noetic, DOCKER_IMAGE: 'ghcr.io/mojin-robotics/mojin-ros:noetic-full' }
+
     steps:
       - uses: actions/checkout@v2
         with:
           lfs: true
-      - name: Checkout LFS objects
-        run: git lfs checkout
-      - uses: 'fmessmer/industrial_ci@master_pylint'
-        env: ${{matrix.env}}
+          ssh-known-hosts: ''
+
+      # This step will fetch/store the directory used by ccache before/after the ci run
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ matrix.ROS_DISTRO }}
+
+      - uses: docker/login-action@v1
+        if: ${{ env.SECRET_AVAILABLE }} # prevents failure notifications if secret GITHUBPAT is not available
+        with:
+          registry: ghcr.io
+          username: mojin-robotics-ci
+          password: ${{ secrets.GITHUBPAT }}
+
+      - uses: ros-industrial/industrial_ci@master
+        if: ${{ env.SECRET_AVAILABLE }} # prevents failure notifications if secret GITHUBPAT is not available
+        with:
+          config: ${{toJSON(matrix)}}
