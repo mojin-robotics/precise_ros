@@ -12,7 +12,7 @@ int main(int argc, char** argv)
   spinner.start();
 
   // Create the hardware interface specific to your robot
-  std::shared_ptr<precise_driver::PreciseHWInterface> precise_hw_interface
+  boost::shared_ptr<precise_driver::PreciseHWInterface> precise_hw_interface
     (new precise_driver::PreciseHWInterface(nh));
   precise_hw_interface->init();
 
