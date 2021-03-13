@@ -1,3 +1,4 @@
+#include <ros/common.h>
 #include <ros_control_boilerplate/generic_hw_control_loop.h>
 #include <precise_driver/precise_hw_interface.h>
 
@@ -12,8 +13,14 @@ int main(int argc, char** argv)
   spinner.start();
 
   // Create the hardware interface specific to your robot
-  boost::shared_ptr<precise_driver::PreciseHWInterface> precise_hw_interface
-    (new precise_driver::PreciseHWInterface(nh));
+  #if ROS_VERSION_MINIMUM(1, 15, 0) // ros noetic is 1.15.x
+    std::shared_ptr<precise_driver::PreciseHWInterface> precise_hw_interface
+      (new precise_driver::PreciseHWInterface(nh));
+  #else
+    boost::shared_ptr<precise_driver::PreciseHWInterface> precise_hw_interface
+      (new precise_driver::PreciseHWInterface(nh));
+  #endif
+
   precise_hw_interface->init();
 
   // Start the control loop
