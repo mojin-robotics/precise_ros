@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - { ROS_DISTRO: kinetic, UPSTREAM_WORKSPACE: .ci.rosinstall.kinetic }
+          - { ROS_DISTRO: kinetic }
           - { ROS_DISTRO: noetic }
 
     steps:
