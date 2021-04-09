@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find precise_description)/urdf/materials.xacro"/>
   <xacro:include filename="$(find precise_description)/urdf/transmission.xacro" />
 
   <xacro:macro name="precise_flex" params="parent name *origin has_podest:=True">
@@ -47,6 +46,9 @@
       <limit effort="${robot_properties['arm']['arm_5_joint']['limit']['effort']}" lower="${robot_properties['arm']['arm_5_joint']['limit']['lower']}" upper="${robot_properties['arm']['arm_5_joint']['limit']['upper']}" velocity="${robot_properties['arm']['arm_5_joint']['limit']['velocity']}"/>
     </xacro:property>
 
+    <material name="precise_white">
+      <color rgba="1 1 1 1"/>
+    </material>
 
     <!-- mounting -->
     <joint name="${name}_base_joint" type="fixed">
@@ -95,14 +97,14 @@
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_1_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_1_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </collision>
     </link>
 
@@ -113,14 +115,14 @@
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_2_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_2_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </collision>
     </link>
 
@@ -131,14 +133,14 @@
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_3_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_3_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </collision>
     </link>
 
@@ -149,14 +151,14 @@
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_4_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_4_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </collision>
     </link>
 
@@ -167,14 +169,14 @@
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_5_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <mesh filename="${robot_properties['arm']['arm_5_link']['visual_mesh']}"/>
         </geometry>
-        <material name="white"/>
+        <material name="precise_white"/>
       </collision>
     </link>
 

@@ -3,6 +3,10 @@
 
   <xacro:macro name="gripper" params="name parent parent_left_finger parent_right_finger *origin *origin_left_finger *origin_right_finger">
 
+    <material name="precise_aluminum">
+      <color rgba="0.6 0.6 0.6 1"/>
+    </material>
+
     <joint name="${name}_ee_fixed_joint" type="fixed">
       <xacro:insert_block name="origin"/>
       <parent link="${parent}"/>
@@ -33,14 +37,14 @@
         <geometry>
           <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
         </geometry>
-        <material name="aluminum"/>
+        <material name="precise_aluminum"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
         </geometry>
-        <material name="aluminum"/>
+        <material name="precise_aluminum"/>
       </collision>
     </link>
 
@@ -56,14 +60,14 @@
         <geometry>
           <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
         </geometry>
-        <material name="aluminum"/>
+        <material name="precise_aluminum"/>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
         </geometry>
-        <material name="aluminum"/>
+        <material name="precise_aluminum"/>
       </collision>
     </link>
 
