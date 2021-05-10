@@ -2,8 +2,8 @@
 Changelog for package precise_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2021-05-10)
+------------------
 * Merge pull request `#23 <https://github.com/mojin-robotics/precise_ros/issues/23>`_ from fmessmer/fix/material_name_clash
   explicit material definition
 * explicit material definition

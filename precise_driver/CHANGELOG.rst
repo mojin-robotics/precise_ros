@@ -2,8 +2,8 @@
 Changelog for package precise_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2021-05-10)
+------------------
 * Merge pull request `#22 <https://github.com/mojin-robotics/precise_ros/issues/22>`_ from fmessmer/fix/roscontrol_boilerplate
   fix/roscontrol boilerplate
 * dual-distro compatibility
