@@ -268,7 +268,7 @@ namespace precise_driver
     {
         enableWrite(false);
         resetController(false);
-        res.success = device_->moveCartesianPosition(profile_no_, req.pose);
+        res.success = device_->moveCartesianPosition(profile_no_, req.target_pose.pose);
         res.success &= device_->waitForEom();
         resetController(true);
         enableWrite(true);

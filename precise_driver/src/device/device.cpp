@@ -1,12 +1,11 @@
 #include <precise_driver/device/device.h>
 #include <sstream>
 #include <string>
+#include <math.h>
 
 #include <ros/ros.h>
 #include <geometry_msgs/Quaternion.h>
 #include <tf/transform_datatypes.h>
-
-#define PI 3.14159
 
 //TODO: decide on methods return values. Either return parsed response or pass result variables as reverences
 //and give the return values a success state
@@ -465,9 +464,9 @@ namespace precise_driver
                         << 1000.0 * pose.position.x << " "
                         << 1000.0 * pose.position.y << " "
                         << 1000.0 * pose.position.z << " "
-	                << yaw * (180.0 / PI) << " "
-                        << pitch * (180.0 / PI) << " "
-                        << roll * (180.0 / PI);
+	                << yaw * (180.0 / M_PI) << " "
+                        << pitch * (180.0 / M_PI) << " "
+                        << roll * (180.0 / M_PI);
 
         Response res = connection_->send(ss.str());
         return (res.error == 0);
