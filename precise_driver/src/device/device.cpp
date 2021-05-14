@@ -465,9 +465,9 @@ namespace precise_driver
                         << 1000.0 * pose.position.x << " "
                         << 1000.0 * pose.position.y << " "
                         << 1000.0 * pose.position.z << " "
-	                << roll * (180.0 / PI) << " "
+	                << yaw * (180.0 / PI) << " "
                         << pitch * (180.0 / PI) << " "
-                        << yaw * (180.0 / PI);
+                        << roll * (180.0 / PI);
 
         Response res = connection_->send(ss.str());
         return (res.error == 0);
