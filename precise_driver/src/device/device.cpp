@@ -6,6 +6,8 @@
 #include <geometry_msgs/Quaternion.h>
 #include <tf/transform_datatypes.h>
 
+#define PI 3.14159
+
 //TODO: decide on methods return values. Either return parsed response or pass result variables as reverences
 //and give the return values a success state
 
@@ -460,12 +462,12 @@ namespace precise_driver
         tf::Matrix3x3(quat).getRPY(roll, pitch, yaw);
 
         ss << "movec " << profile_no << " "
-                        << pose.position.x << " "
-                        << pose.position.y << " "
-                        << pose.position.z << " "
-                        << roll << " "
-                        << pitch << " "
-                        << yaw;
+                        << 1000.0 * pose.position.x << " "
+                        << 1000.0 * pose.position.y << " "
+                        << 1000.0 * pose.position.z << " "
+	                << roll * (180.0 / PI) << " "
+                        << pitch * (180.0 / PI) << " "
+                        << yaw * (180.0 / PI);
 
         Response res = connection_->send(ss.str());
         return (res.error == 0);
