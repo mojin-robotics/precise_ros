@@ -5,6 +5,7 @@
 #include <precise_driver/device/device.h>
 #include <precise_driver/device/tcp_client.h>
 #include <precise_driver/Gripper.h>
+#include <precise_driver/MoveCartesian.h>
 #include <precise_driver/Plate.h>
 #include <ros/ros.h>
 
@@ -42,7 +43,8 @@ namespace precise_driver
         ros::ServiceServer grasp_plate_srv_;
         ros::ServiceServer release_plate_srv_;
         ros::ServiceServer gripper_srv_;
-
+        ros::ServiceServer move_cartesian_srv_;
+      
         ros::ServiceClient switch_controller_srv_;
 
         std::shared_ptr<Device> device_;
@@ -69,6 +71,7 @@ namespace precise_driver
         bool cmdCb(cob_srvs::SetString::Request &req, cob_srvs::SetString::Response &res);
 
         bool gripperCB(precise_driver::Gripper::Request &req, precise_driver::Gripper::Response &res);
+        bool moveCartesianCB(precise_driver::MoveCartesian::Request &req, precise_driver::MoveCartesian::Response &res);
 
         bool graspPlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res);
         bool releasePlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res);

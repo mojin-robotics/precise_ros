@@ -38,9 +38,10 @@ namespace precise_driver
         grasp_plate_srv_ = driver_nh.advertiseService("grasp_plate", &PreciseHWInterface::graspPlateCB, this);
         release_plate_srv_ = driver_nh.advertiseService("release_plate", &PreciseHWInterface::releasePlateCB, this);
         gripper_srv_ = driver_nh.advertiseService("gripper", &PreciseHWInterface::gripperCB, this);
+	move_cartesian_srv_ = driver_nh.advertiseService("move_cartesian", &PreciseHWInterface::moveCartesianCB, this);
 
         switch_controller_srv_ = nh_.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
-
+	
         //Doosan like hack
         pnh.param<bool>("doosan_hack_enabled", doosan_hack_enabled_, doosan_hack_enabled_);
         sub_follow_joint_goal = driver_nh.subscribe<control_msgs::FollowJointTrajectoryActionGoal>
@@ -261,6 +262,17 @@ namespace precise_driver
         resetController(true);
         enableWrite(true);
         return true;
+    }
+
+    bool PreciseHWInterface::moveCartesianCB(precise_driver::MoveCartesian::Request &req, precise_driver::MoveCartesian::Response &res)
+    {
+        enableWrite(false);
+        resetController(false);
+        res.success = device_->moveCartesianPosition(profile_no_, req.pose);
+        res.success &= device_->waitForEom();
+        resetController(true);
+        enableWrite(true);
+	return true;
     }
 
     void PreciseHWInterface::enableWrite(bool value)

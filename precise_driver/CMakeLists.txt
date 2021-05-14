@@ -18,11 +18,13 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   Gripper.srv
+  MoveCartesian.srv
   Plate.srv
 )
 
 generate_messages(
   DEPENDENCIES
+  geometry_msgs
 )
 
 catkin_package(
