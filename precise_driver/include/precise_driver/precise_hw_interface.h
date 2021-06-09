@@ -36,7 +36,6 @@ namespace precise_driver
         ros::ServiceServer init_srv_;
         ros::ServiceServer recover_srv_;
         ros::ServiceServer teachmode_srv_;
-        ros::ServiceServer teachmode_gripped_srv_;
         ros::ServiceServer home_srv_;
         ros::ServiceServer power_srv_;
         ros::ServiceServer attach_srv_;

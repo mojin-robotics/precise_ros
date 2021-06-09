@@ -32,7 +32,6 @@ namespace precise_driver
         init_srv_ = driver_nh.advertiseService("init", &PreciseHWInterface::initCb, this);
         recover_srv_ = driver_nh.advertiseService("recover", &PreciseHWInterface::recoverCb, this);
         teachmode_srv_ = driver_nh.advertiseService("teach_mode", &PreciseHWInterface::teachmodeCb, this);
-
         home_srv_ = driver_nh.advertiseService("home", &PreciseHWInterface::homeCb, this);
         power_srv_ = driver_nh.advertiseService("power", &PreciseHWInterface::powerCb, this);
         cmd_srv_ = driver_nh.advertiseService("command", &PreciseHWInterface::cmdCb, this);
