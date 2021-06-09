@@ -141,7 +141,7 @@ namespace precise_driver
     bool PreciseHWInterface::teachmodeCb(precise_driver::SetFreeMode::Request &req, precise_driver::SetFreeMode::Response &res)
     {
         // Check bitmask size
-        if (req.axes > 31)
+        if (req.data && req.axes > 31)
         {
             res.success = false;
             res.message = "axes is interpreted as bitmask and must be in [0, 31]";
