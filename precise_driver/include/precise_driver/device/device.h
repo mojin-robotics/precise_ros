@@ -75,7 +75,7 @@ namespace precise_driver
         bool attach(const bool flag);
 
         //enable/disable zero gravity composition (teach mode)
-        bool freeMode(const bool enabled, const uint8_t axes);
+        bool freeMode(const bool enabled, const int axes);
 
         //check if manipulator is operational for commanding joint states
         bool operational();
