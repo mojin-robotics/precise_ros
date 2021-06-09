@@ -32,7 +32,7 @@ namespace precise_driver
         init_srv_ = driver_nh.advertiseService("init", &PreciseHWInterface::initCb, this);
         recover_srv_ = driver_nh.advertiseService("recover", &PreciseHWInterface::recoverCb, this);
         teachmode_srv_ = driver_nh.advertiseService("teach_mode", &PreciseHWInterface::teachmodeCb, this);
-        teachmode_gripped_srv_ = driver_nh.advertiseService("teach_mode_gripped", &PreciseHWInterface::teachmodeGrippedCb, this);
+
         home_srv_ = driver_nh.advertiseService("home", &PreciseHWInterface::homeCb, this);
         power_srv_ = driver_nh.advertiseService("power", &PreciseHWInterface::powerCb, this);
         cmd_srv_ = driver_nh.advertiseService("command", &PreciseHWInterface::cmdCb, this);
@@ -139,35 +139,25 @@ namespace precise_driver
         return true;
     }
 
-    bool PreciseHWInterface::teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
+    bool PreciseHWInterface::teachmodeCb(precise_driver::SetFreeMode::Request &req, precise_driver::SetFreeMode::Response &res)
     {
+        // Check bitmask size
+        if (req.axes > 31)
+        {
+            res.success = false;
+            res.message = "axes is interpreted as bitmask and must be in [0, 31]";
+            return true;
+        }
+      
         enableWrite(false);
 
         if(req.data)
         {
-            res.success = resetController(false) && device_->freeMode(req.data, 31);
+            res.success = resetController(false) && device_->freeMode(req.data, req.axes);
         }
         else
         {
-            res.success = resetController(true) && device_->freeMode(req.data, 31);
-        }
-
-        enableWrite(true);
-
-        return true;
-    }
-
-    bool PreciseHWInterface::teachmodeGrippedCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
-    {
-        enableWrite(false);
-
-        if(req.data)
-        {
-            res.success = resetController(false) && device_->freeMode(req.data, 15);
-        }
-        else
-        {
-            res.success = resetController(true) && device_->freeMode(req.data, 15);
+            res.success = resetController(true) && device_->freeMode(req.data, req.axes);
         }
 
         enableWrite(true);

@@ -231,7 +231,7 @@ namespace precise_driver
     //   All axes free:                11111 = 31
     //   All axes except z-Axis free:  11110 = 30
     //   All axes except gripper free: 01111 = 15
-    bool Device::freeMode(const bool enabled, const int axes)
+    bool Device::freeMode(const bool enabled, const uint8_t axes)
     {
         std::stringstream ss;
         if(enabled)
