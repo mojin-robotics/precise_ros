@@ -22,7 +22,7 @@ arm:
     limit:
       effort: 1000.0
       lower: 0.0015  # m
-      upper: 0.750  # m - 401,5mm standard, 750 mm, 1160 mm
+      upper: 0.730  # m - 401,5mm standard, 750 mm, 1160 mm
       velocity: 0.5
   arm_2_joint:
     origin:
