@@ -42,7 +42,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
+          <mesh filename="package://precise_description/meshes/mrk_finger_collision.STL"/>
         </geometry>
         <material name="precise_aluminum"/>
       </collision>
@@ -65,7 +65,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://precise_description/meshes/mrk_finger.STL"/>
+          <mesh filename="package://precise_description/meshes/mrk_finger_collision.STL"/>
         </geometry>
         <material name="precise_aluminum"/>
       </collision>
