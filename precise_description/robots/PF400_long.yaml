@@ -60,8 +60,8 @@ arm:
       yaw: 0.0
     limit:
       effort: 1000.0
-      lower: -6.28  # -970
-      upper: +6.28  # +970
+      lower: -16.9296937443  # -970
+      upper: +16.9296937443  # +970
       velocity: 12.5664
   arm_5_joint:
     origin:
