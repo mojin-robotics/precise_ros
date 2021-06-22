@@ -227,11 +227,15 @@ namespace precise_driver
     }
 
     //TODO: There is a freeMode command described the TCS Documentation
-    bool Device::freeMode(const bool enabled)
+    // axes is interpreted as bitmask:
+    //   All axes free:                11111 = 31
+    //   All axes except z-Axis free:  11110 = 30
+    //   All axes except gripper free: 01111 = 15
+    bool Device::freeMode(const bool enabled, const int axes)
     {
         std::stringstream ss;
         if(enabled)
-            ss << "zeroTorque " << static_cast<int>(enabled)<<" 31"; //bitmask 1=axis1, 2=axis2, 4=axis3 ...
+            ss << "zeroTorque " << static_cast<int>(enabled) << " " << axes;
         else
             ss << "zeroTorque " << static_cast<int>(enabled);
 

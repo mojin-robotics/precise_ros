@@ -19,6 +19,7 @@ add_service_files(
   FILES
   Gripper.srv
   Plate.srv
+  SetFreeMode.srv
 )
 
 generate_messages(

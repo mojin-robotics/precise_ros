@@ -138,24 +138,32 @@ namespace precise_driver
         return true;
     }
 
-    bool PreciseHWInterface::teachmodeCb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
+    bool PreciseHWInterface::teachmodeCb(precise_driver::SetFreeMode::Request &req, precise_driver::SetFreeMode::Response &res)
     {
+        // Check bitmask size
+        if (req.data && req.axes > 31)
+        {
+            res.success = false;
+            res.message = "axes is interpreted as bitmask and must be in [0, 31]";
+            return true;
+        }
+      
         enableWrite(false);
 
         if(req.data)
         {
-            res.success = resetController(false) && device_->freeMode(req.data);
+            res.success = resetController(false) && device_->freeMode(req.data, req.axes);
         }
         else
         {
-            res.success = resetController(true) && device_->freeMode(req.data);
+            res.success = resetController(true) && device_->freeMode(req.data, req.axes);
         }
 
         enableWrite(true);
 
         return true;
     }
-
+  
     bool PreciseHWInterface::homeCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
         enableWrite(false);
