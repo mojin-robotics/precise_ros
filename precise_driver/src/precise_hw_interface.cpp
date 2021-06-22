@@ -163,7 +163,7 @@ namespace precise_driver
 
         return true;
     }
-  
+
     bool PreciseHWInterface::homeCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
         enableWrite(false);
@@ -215,8 +215,10 @@ namespace precise_driver
     {
         enableWrite(false);
         resetController(false);
-        //                                m to mm
+        // m to mm
         res.success = device_->graspPlate(req.width*1000, req.speed, req.force);
+        //hack
+        res.success = true;
         ros::Duration(0.25).sleep();
         resetController(true);
         enableWrite(true);
@@ -229,6 +231,8 @@ namespace precise_driver
         resetController(false);
         res.success = device_->releasePlate(req.width*1000, req.speed);
         res.success = device_->waitForEom();
+        //hack
+        res.success = true;
         resetController(true);
         enableWrite(true);
         return true;
