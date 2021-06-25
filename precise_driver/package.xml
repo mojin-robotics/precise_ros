@@ -27,6 +27,7 @@
   <exec_depend>joint_state_controller</exec_depend>
   <exec_depend>position_controllers</exec_depend>
   <exec_depend>precise_description</exec_depend>
+  <exec_depend>rospy</exec_depend>
 
   <test_depend>roslaunch</test_depend>
 
