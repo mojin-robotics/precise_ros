@@ -41,6 +41,10 @@ namespace precise_driver
 
         switch_controller_srv_ = nh_.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
 
+        diagnostic_updater_.setHardwareID("precise_driver");
+        diagnostic_updater_.add("precise_driver", this, &PreciseHWInterface::produce_diagnostics);
+        diagnostic_timer_ = driver_nh.createTimer(ros::Duration(1.0), &PreciseHWInterface::diagnostics_timer_thread, this);
+
         //Doosan like hack
         pnh.param<bool>("doosan_hack_enabled", doosan_hack_enabled_, doosan_hack_enabled_);
         sub_follow_joint_goal = driver_nh.subscribe<control_msgs::FollowJointTrajectoryActionGoal>
@@ -337,6 +341,27 @@ namespace precise_driver
             point.positions.push_back(joint_position_.back());
             ret = device_->moveJointPosition(profile_no_, point.positions);
         }
+    }
+
+    void PreciseHWInterface::diagnostics_timer_thread(const ros::TimerEvent& event)
+    {
+        diagnostic_updater_.update();
+    }
+
+    void PreciseHWInterface::produce_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat)
+    {
+        if(device_->operational())
+        {
+            stat.summary(diagnostic_msgs::DiagnosticStatus::OK, "Driver operational");
+        }
+        else
+        {
+            stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "Driver NOT operational");
+        }
+        stat.add("operational", device_->operational());
+        stat.add("getHp", device_->getHp());
+        stat.add("getSysState", device_->getSysState(true));
+        stat.add("getMode", device_->getMode());
     }
 
 } // namespace precise_driver
