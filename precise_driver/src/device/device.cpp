@@ -13,7 +13,7 @@ namespace precise_driver
 {
     Device::Device(std::shared_ptr<TCPClient> connection,
                             std::shared_ptr<TCPClient> status_connection)
-    : is_attached_(false), is_hp_(false), is_homed_(false), is_teachmode_(false)
+    : is_attached_(false), is_hp_(false), is_homed_(false), is_teachmode_(false), sys_state_(-1)
     {
         connection_ = connection;
         status_connection_ = status_connection;
