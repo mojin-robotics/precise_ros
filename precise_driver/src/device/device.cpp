@@ -264,7 +264,8 @@ namespace precise_driver
         bool ret;
         {
             std::lock_guard<std::mutex> guard(mutex_state_data_);
-            ret = is_attached_ && is_homed_ && (sys_state_ != -1);
+            //ret = is_attached_ && is_homed_ && (sys_state_ != -1);
+            ret = is_homed_ && (sys_state_ != -1);
         }
         return ret;
     }
