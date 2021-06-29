@@ -255,6 +255,12 @@ namespace precise_driver
         {
             std::lock_guard<std::mutex> guard(mutex_state_data_);
             ret = is_attached_ && is_homed_ && is_hp_ && !is_teachmode_ && (sys_state_ == 21);
+            ROS_WARN_STREAM_NAMED("device","operational is: "<<ret);
+            ROS_WARN_STREAM_NAMED("device","is_attached_ is: "<<is_attached_);
+            ROS_WARN_STREAM_NAMED("device","is_homed_ is: "<<is_homed_);
+            ROS_WARN_STREAM_NAMED("device","is_hp_ is: "<<is_hp_);
+            ROS_WARN_STREAM_NAMED("device","is_teachmode_ is: "<<is_teachmode_);
+            ROS_WARN_STREAM_NAMED("device","sys_state_ is: "<<sys_state_);
         }
         return ret;
     }
