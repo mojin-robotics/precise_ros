@@ -397,9 +397,7 @@ namespace precise_driver
         }
         stat.add("is_init", device_->is_init());
         stat.add("is_operational", device_->is_operational());
-        // stat.add("getHp", device_->getHp());
-        // stat.add("getSysState", device_->getSysState(true));
-        // stat.add("getMode", device_->getMode());
+        device_->fill_diagnostics(stat);
     }
 
 } // namespace precise_driver

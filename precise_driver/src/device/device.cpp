@@ -269,6 +269,18 @@ namespace precise_driver
         return ret;
     }
 
+    void Device::fill_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat)
+    {
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            stat.add("is_attached_", is_attached_);
+            stat.add("is_homed_", is_homed_);
+            stat.add("is_hp_", is_hp_);
+            stat.add("is_teachmode_", is_teachmode_);
+            stat.add("sys_state_", sys_state_);
+        }
+    }
+
     int Device::getMode()
     {
         std::stringstream ss;
