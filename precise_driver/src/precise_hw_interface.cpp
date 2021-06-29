@@ -94,7 +94,7 @@ namespace precise_driver
         // Safety
         enforceLimits(elapsed_time);
 
-        if(isWriteEnabled() && device_->operational())
+        if(isWriteEnabled() && device_->is_operational())
         {
             //device_->moveJointPosition(_profile_no, joint_position_command_);
             device_->queueJointPosition(profile_no_, joint_position_command_);
@@ -350,7 +350,7 @@ namespace precise_driver
 
     void PreciseHWInterface::produce_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat)
     {
-        if(device_->operational())
+        if(device_->is_operational())
         {
             stat.summary(diagnostic_msgs::DiagnosticStatus::OK, "Driver operational");
         }
@@ -358,7 +358,7 @@ namespace precise_driver
         {
             stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "Driver NOT operational");
         }
-        stat.add("operational", device_->operational());
+        stat.add("is_operational", device_->is_operational());
         // stat.add("getHp", device_->getHp());
         // stat.add("getSysState", device_->getSysState(true));
         // stat.add("getMode", device_->getMode());

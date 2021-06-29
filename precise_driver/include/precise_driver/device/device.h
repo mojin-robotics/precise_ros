@@ -78,7 +78,7 @@ namespace precise_driver
         bool freeMode(const bool enabled, const int axes);
 
         //check if manipulator is operational for commanding joint states
-        bool operational();
+        bool is_operational();
 
         //gets the manipulators actual mode (TODO: define description mode -> enum)
         int getMode();

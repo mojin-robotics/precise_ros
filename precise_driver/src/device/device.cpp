@@ -249,7 +249,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool Device::operational()
+    bool Device::is_operational()
     {
         bool ret;
         {
