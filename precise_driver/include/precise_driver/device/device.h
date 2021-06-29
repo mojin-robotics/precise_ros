@@ -79,6 +79,8 @@ namespace precise_driver
 
         //check if manipulator is operational for commanding joint states
         bool is_operational();
+        //check if manipulator has completed init routine
+        bool is_init();
 
         //gets the manipulators actual mode (TODO: define description mode -> enum)
         int getMode();

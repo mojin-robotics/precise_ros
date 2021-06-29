@@ -358,6 +358,7 @@ namespace precise_driver
         {
             stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "Driver NOT operational");
         }
+        stat.add("is_init", device_->is_init());
         stat.add("is_operational", device_->is_operational());
         // stat.add("getHp", device_->getHp());
         // stat.add("getSysState", device_->getSysState(true));
