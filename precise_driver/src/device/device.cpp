@@ -81,7 +81,7 @@ namespace precise_driver
 
         ROS_INFO("initialized");
 
-        return is_attached_;
+        return is_init();
     }
 
     bool Device::home()
@@ -111,7 +111,7 @@ namespace precise_driver
         nop();
         bool ret = setHp(true, 5);
         ret &= attach(true);
-        return ret;
+        return is_operational();
     }
 
     bool Device::nop()
