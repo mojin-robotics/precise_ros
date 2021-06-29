@@ -111,34 +111,71 @@ namespace precise_driver
 
     bool PreciseHWInterface::initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
-        enableWrite(false);
-        if(device_->init(profile_no_, profile_) && device_->home())
+        if(device_->is_init())
         {
-            device_->startCommandThread();
+            std::string msg = "already initialized";
+            ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
             res.success = true;
-            cond_init_.notify_one();
+            res.message = msg;
         }
         else
-            res.success = false;
-        enableWrite(true);
+        {
+            enableWrite(false);
+            if(device_->init(profile_no_, profile_) && device_->home())
+            {
+                device_->startCommandThread();
+                std::string msg = "successfully initialized";
+                ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
+                res.success = true;
+                res.message = msg;
+                cond_init_.notify_one();
+            }
+            else
+            {
+                std::string msg = "successfully initialized";
+                ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
+                res.success = false;
+                res.message = msg;
+            }
+            enableWrite(true);
+        }
         return true;
     }
 
     bool PreciseHWInterface::recoverCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
-        //Wait for hardware to init
-        ROS_INFO("Try recover arm");
-        enableWrite(false);
-
-        resetController(false);
-
-        if(device_->recover())
-            res.success = true;
-        else
+        if(!device_->is_init())
+        {
+            std::string msg = "not yet initialized";
+            ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
             res.success = false;
+            res.message = msg;
+        }
+        else
+        {
+            //Wait for hardware to init
+            ROS_INFO("Try recover arm");
+            enableWrite(false);
+            resetController(false);
 
-        resetController(true);
-        enableWrite(true);
+            if(device_->recover())
+            {
+                std::string msg = "recover successful";
+                ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
+                res.success = true;
+                res.message = msg;
+            }
+            else
+            {
+                std::string msg = "recover failed";
+                ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
+                res.success = false;
+                res.message = msg;
+            }
+
+            resetController(true);
+            enableWrite(true);
+        }
         return true;
     }
 
