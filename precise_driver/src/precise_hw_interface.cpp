@@ -41,6 +41,10 @@ namespace precise_driver
 
         switch_controller_srv_ = nh_.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
 
+        diagnostic_updater_.setHardwareID("precise_driver");
+        diagnostic_updater_.add("precise_driver", this, &PreciseHWInterface::produce_diagnostics);
+        diagnostic_timer_ = driver_nh.createTimer(ros::Duration(1.0), &PreciseHWInterface::diagnostics_timer_thread, this);
+
         //Doosan like hack
         pnh.param<bool>("doosan_hack_enabled", doosan_hack_enabled_, doosan_hack_enabled_);
         sub_follow_joint_goal = driver_nh.subscribe<control_msgs::FollowJointTrajectoryActionGoal>
@@ -90,7 +94,7 @@ namespace precise_driver
         // Safety
         enforceLimits(elapsed_time);
 
-        if(isWriteEnabled() && device_->operational())
+        if(isWriteEnabled() && device_->is_operational())
         {
             //device_->moveJointPosition(_profile_no, joint_position_command_);
             device_->queueJointPosition(profile_no_, joint_position_command_);
@@ -107,34 +111,71 @@ namespace precise_driver
 
     bool PreciseHWInterface::initCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
-        enableWrite(false);
-        if(device_->init(profile_no_, profile_) && device_->home())
+        if(device_->is_init())
         {
-            device_->startCommandThread();
+            std::string msg = "already initialized";
+            ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
             res.success = true;
-            cond_init_.notify_one();
+            res.message = msg;
         }
         else
-            res.success = false;
-        enableWrite(true);
+        {
+            enableWrite(false);
+            if(device_->init(profile_no_, profile_) && device_->home())
+            {
+                device_->startCommandThread();
+                std::string msg = "successfully initialized";
+                ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
+                res.success = true;
+                res.message = msg;
+                cond_init_.notify_one();
+            }
+            else
+            {
+                std::string msg = "successfully initialized";
+                ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
+                res.success = false;
+                res.message = msg;
+            }
+            enableWrite(true);
+        }
         return true;
     }
 
     bool PreciseHWInterface::recoverCb(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
     {
-        //Wait for hardware to init
-        ROS_INFO("Try recover arm");
-        enableWrite(false);
-
-        resetController(false);
-
-        if(device_->recover())
-            res.success = true;
-        else
+        if(!device_->is_init())
+        {
+            std::string msg = "not yet initialized";
+            ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
             res.success = false;
+            res.message = msg;
+        }
+        else
+        {
+            //Wait for hardware to init
+            ROS_INFO("Try recover arm");
+            enableWrite(false);
+            resetController(false);
 
-        resetController(true);
-        enableWrite(true);
+            if(device_->recover())
+            {
+                std::string msg = "recover successful";
+                ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
+                res.success = true;
+                res.message = msg;
+            }
+            else
+            {
+                std::string msg = "recover failed";
+                ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
+                res.success = false;
+                res.message = msg;
+            }
+
+            resetController(true);
+            enableWrite(true);
+        }
         return true;
     }
 
@@ -337,6 +378,26 @@ namespace precise_driver
             point.positions.push_back(joint_position_.back());
             ret = device_->moveJointPosition(profile_no_, point.positions);
         }
+    }
+
+    void PreciseHWInterface::diagnostics_timer_thread(const ros::TimerEvent& event)
+    {
+        diagnostic_updater_.update();
+    }
+
+    void PreciseHWInterface::produce_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat)
+    {
+        if(device_->is_operational())
+        {
+            stat.summary(diagnostic_msgs::DiagnosticStatus::OK, "Driver operational");
+        }
+        else
+        {
+            stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "Driver NOT operational");
+        }
+        stat.add("is_init", device_->is_init());
+        stat.add("is_operational", device_->is_operational());
+        device_->fill_diagnostics(stat);
     }
 
 } // namespace precise_driver

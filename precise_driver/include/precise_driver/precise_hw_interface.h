@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/thread.hpp>
 #include <realtime_tools/realtime_publisher.h>
 #include <ros_control_boilerplate/generic_hw_interface.h>
 #include <precise_driver/device/device.h>
@@ -17,6 +18,8 @@
 #include <cob_srvs/SetString.h>
 
 #include <control_msgs/FollowJointTrajectoryActionGoal.h>
+
+#include <diagnostic_updater/diagnostic_updater.h>
 
 namespace precise_driver
 {
@@ -73,6 +76,12 @@ namespace precise_driver
 
         bool graspPlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res);
         bool releasePlateCB(precise_driver::Plate::Request &req, precise_driver::Plate::Response &res);
+
+        diagnostic_updater::Updater diagnostic_updater_;
+        ros::Timer diagnostic_timer_;
+
+        void diagnostics_timer_thread(const ros::TimerEvent& event);
+        void produce_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat);
 
     //Doosan like Hack
     private:

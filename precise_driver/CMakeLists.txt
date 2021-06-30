@@ -6,6 +6,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   cob_srvs
   controller_manager_msgs
+  diagnostic_updater
   geometry_msgs
   message_generation
   realtime_tools
@@ -27,7 +28,7 @@ generate_messages(
 )
 
 catkin_package(
-  CATKIN_DEPENDS cob_srvs controller_manager_msgs geometry_msgs message_runtime roscpp std_srvs tf
+  CATKIN_DEPENDS cob_srvs controller_manager_msgs diagnostic_updater geometry_msgs message_runtime roscpp std_srvs tf
 )
 
 ## Build

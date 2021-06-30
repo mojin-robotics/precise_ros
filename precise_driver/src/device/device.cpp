@@ -13,7 +13,7 @@ namespace precise_driver
 {
     Device::Device(std::shared_ptr<TCPClient> connection,
                             std::shared_ptr<TCPClient> status_connection)
-    : is_attached_(false), is_hp_(false), is_homed_(false), is_teachmode_(false)
+    : is_attached_(false), is_hp_(false), is_homed_(false), is_teachmode_(false), sys_state_(-1)
     {
         connection_ = connection;
         status_connection_ = status_connection;
@@ -249,7 +249,7 @@ namespace precise_driver
         return (res.error == 0);
     }
 
-    bool Device::operational()
+    bool Device::is_operational()
     {
         bool ret;
         {
@@ -257,6 +257,29 @@ namespace precise_driver
             ret = is_attached_ && is_homed_ && is_hp_ && !is_teachmode_ && (sys_state_ == 21);
         }
         return ret;
+    }
+
+    bool Device::is_init()
+    {
+        bool ret;
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            //ret = is_attached_ && is_homed_ && (sys_state_ != -1);
+            ret = is_homed_ && (sys_state_ != -1);
+        }
+        return ret;
+    }
+
+    void Device::fill_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat)
+    {
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            stat.add("is_attached_", is_attached_);
+            stat.add("is_homed_", is_homed_);
+            stat.add("is_hp_", is_hp_);
+            stat.add("is_teachmode_", is_teachmode_);
+            stat.add("sys_state_", sys_state_);
+        }
     }
 
     int Device::getMode()

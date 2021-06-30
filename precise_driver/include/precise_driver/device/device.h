@@ -9,7 +9,7 @@
 #include <thread>
 
 #include <geometry_msgs/Pose.h>
-
+#include <diagnostic_updater/DiagnosticStatusWrapper.h>
 namespace precise_driver
 {
     struct Profile{
@@ -78,7 +78,11 @@ namespace precise_driver
         bool freeMode(const bool enabled, const int axes);
 
         //check if manipulator is operational for commanding joint states
-        bool operational();
+        bool is_operational();
+        //check if manipulator has completed init routine
+        bool is_init();
+        //fill some internal info for diagnostics
+        void fill_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat);
 
         //gets the manipulators actual mode (TODO: define description mode -> enum)
         int getMode();
