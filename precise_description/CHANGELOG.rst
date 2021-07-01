@@ -2,6 +2,20 @@
 Changelog for package precise_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#26 <https://github.com/mojin-robotics/precise_ros/issues/26>`_ from fmessmer/kevin_integration
+  [kevin integration] combined pr
+* Revert "adjust upper limit"
+  This reverts commit fc8e73dedf6195838f9bb1bdae43d0510b80a88a.
+* Revert "tmp: tweak joint limits"
+  This reverts commit 787959bb07c7b5a96ad309ede82538752d73146b.
+* tmp: tweak joint limits
+* longer collision mesh for finger
+* adjust upper limit
+* update mrk_gripper mesh
+* Contributors: Felix Messmer, fmessmer, robot@cob4-21, robot@cob4-23
+
 0.0.2 (2021-05-10)
 ------------------
 * Merge pull request `#23 <https://github.com/mojin-robotics/precise_ros/issues/23>`_ from fmessmer/fix/material_name_clash

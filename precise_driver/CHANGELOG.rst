@@ -2,6 +2,40 @@
 Changelog for package precise_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#28 <https://github.com/mojin-robotics/precise_ros/issues/28>`_ from fmessmer/precise_init_diagnostics
+  [kevin integration] initial diagnostics
+* is_attached is not condition for is_init
+* Revert "better return for init and recover"
+  This reverts commit fcfd8ac23a1c5a9757ea3a01a6f0f35f8fd8350d.
+* fill diagnostic details
+* better return for init and recover
+* remove log output
+* better conditions for init and recover callback
+* implement is_init
+* initialize sys_state
+* rename operational
+* tmp: logoutput for operational
+* only query operational
+* initial diagnostics
+* Merge pull request `#27 <https://github.com/mojin-robotics/precise_ros/issues/27>`_ from fmessmer/precise_emulation
+  add emulated driver
+* add emulated driver
+* Merge pull request `#26 <https://github.com/mojin-robotics/precise_ros/issues/26>`_ from fmessmer/kevin_integration
+  [kevin integration] combined pr
+* cleanup indentation
+* hack: return success true
+* Merge pull request `#24 <https://github.com/mojin-robotics/precise_ros/issues/24>`_ from Deleh/feature/teachmode_gripped
+  [kevin integration] Add new service for gripped teachmode
+* ignore axes if teachmode is disabled
+* change datatype to int
+* remove old declaration
+* add new srv SetFreeMode and adapt service teachmode
+* fix indentation
+* add new service for gripped teachmode
+* Contributors: Denis Lehmann, Felix Messmer, fmessmer, robot@cob4-21, robot@cob4-23
+
 0.0.2 (2021-05-10)
 ------------------
 * Merge pull request `#22 <https://github.com/mojin-robotics/precise_ros/issues/22>`_ from fmessmer/fix/roscontrol_boilerplate
