@@ -2,8 +2,8 @@
 Changelog for package precise_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.3 (2021-07-01)
+------------------
 * Merge pull request `#28 <https://github.com/mojin-robotics/precise_ros/issues/28>`_ from fmessmer/precise_init_diagnostics
   [kevin integration] initial diagnostics
 * is_attached is not condition for is_init
