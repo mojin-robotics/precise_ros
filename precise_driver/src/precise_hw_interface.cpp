@@ -121,18 +121,28 @@ namespace precise_driver
         else
         {
             enableWrite(false);
-            if(device_->init(profile_no_, profile_) && device_->home())
+            if(device_->init(profile_no_, profile_))
             {
-                device_->startCommandThread();
-                std::string msg = "successfully initialized";
-                ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
-                res.success = true;
-                res.message = msg;
-                cond_init_.notify_one();
+                if( device_->home())
+                {
+                    device_->startCommandThread();
+                    std::string msg = "successfully initialized";
+                    ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
+                    res.success = true;
+                    res.message = msg;
+                    cond_init_.notify_one();
+                }
+                else
+                {
+                    std::string msg = "device home failed";
+                    ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
+                    res.success = false;
+                    res.message = msg;
+                }
             }
             else
             {
-                std::string msg = "successfully initialized";
+                std::string msg = "device init failed";
                 ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
                 res.success = false;
                 res.message = msg;
