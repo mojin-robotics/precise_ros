@@ -2,6 +2,9 @@
 Changelog for package precise_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.3 (2021-07-01)
 ------------------
 * Merge pull request `#26 <https://github.com/mojin-robotics/precise_ros/issues/26>`_ from fmessmer/kevin_integration
