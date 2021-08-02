@@ -2,8 +2,8 @@
 Changelog for package precise_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2021-08-02)
+------------------
 * Merge pull request `#31 <https://github.com/mojin-robotics/precise_ros/issues/31>`_ from fmessmer/driver_enhancements
   [kevin integration] driver enhancements
 * split init procedure and fix init failure reporting

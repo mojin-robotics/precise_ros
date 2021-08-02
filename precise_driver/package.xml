@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>precise_driver</name>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <description>Driver package for the Precise manipulators</description>
 
   <maintainer email="benjamin.maidel@mojin-robotics.de">Benjamin Maidel</maintainer>
