@@ -237,6 +237,14 @@
       <xacro:insert_block name="limit_5_joint"/>
       <mimic joint="${name}_5_joint" multiplier="1"/>
     </joint>
+    <gazebo>
+      <plugin name="${name}_5_mimic_joint_gazebo" filename="libgazebo_ros_mimic_joint.so">
+        <jointName>${name}_5_mimic_joint</jointName>
+        <mimicJoint>${name}_5_joint</mimicJoint>
+        <multiplier>1.0</multiplier>
+        <offset>0.0</offset>
+      </plugin>
+    </gazebo>
 
     <!-- endeffector -->
     <joint name="${name}_ee_joint" type="fixed">
