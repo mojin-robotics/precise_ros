@@ -2,6 +2,14 @@
 Changelog for package precise_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#33 <https://github.com/mojin-robotics/precise_ros/issues/33>`_ from fmessmer/unique_control_plugin
+  guarantee unique plugin name for hwi_switch_gazebo_ros_control
+* add plugins for mimic joints
+* guarantee unique plugin name for hwi_switch_gazebo_ros_control
+* Contributors: Felix Messmer, fmessmer
+
 0.0.4 (2021-08-02)
 ------------------
 
