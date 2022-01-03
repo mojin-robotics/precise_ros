@@ -135,29 +135,24 @@ namespace precise_driver
             {
                 if(device_->home())
                 {
-                    bool ret = true;
                     if(post_init_configuration_.size() > 0)
                     {
+                        bool ret;
                         ret = device_->moveJointPosition(profile_no_, post_init_configuration_);
                         ret &= device_->waitForEom();
+                        if(!ret)
+                        {
+                            std::string msg = "Failed to move to post init configuration";
+                            ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
+                        }
                     }
 
-                    if(!ret)
-                    {
-                        std::string msg = "Failed to move to post init configuration";
-                        ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
-                        res.success = false;
-                        res.message = msg;
-                    }
-                    else
-                    {
-                        device_->startCommandThread();
-                        std::string msg = "successfully initialized";
-                        ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
-                        res.success = true;
-                        res.message = msg;
-                        cond_init_.notify_one();
-                    }
+                    device_->startCommandThread();
+                    std::string msg = "successfully initialized";
+                    ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
+                    res.success = true;
+                    res.message = msg;
+                    cond_init_.notify_one();
                 }
                 else
                 {
