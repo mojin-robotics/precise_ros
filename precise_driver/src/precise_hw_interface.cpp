@@ -31,7 +31,7 @@ namespace precise_driver
             pnh.getParam("post_init_configuration", post_init_configuration_);
             if(post_init_configuration_.size() != joint_names_.size())
             {
-                ROS_ERROR_STREAM_NAMED("precise_hw_interface", "post_init_configuration size does not match joint_names size");
+                ROS_ERROR_STREAM_NAMED("precise_hw_interface", "post_init_configuration size "<<post_init_configuration_.size()<<" does not match joint_names size " <<joint_names_.size());
                 post_init_configuration_.clear();
             }
         }
