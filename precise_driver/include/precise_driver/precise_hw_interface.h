@@ -57,6 +57,8 @@ namespace precise_driver
         std::mutex mutex_write_;
         std::condition_variable cond_init_;
 
+        std::vector<double> post_init_configuration_;
+
         bool write_enabled_;
 
         void enableWrite(bool value);

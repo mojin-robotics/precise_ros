@@ -26,6 +26,16 @@ namespace precise_driver
         pnh.param<int>("in_range", profile_.in_range, profile_.in_range);
         pnh.param<int>("straight", profile_.straight, profile_.straight);
 
+        if(pnh.hasParam("post_init_configuration"))
+        {
+            pnh.getParam("post_init_configuration", post_init_configuration_);
+            if(post_init_configuration_.size() != joint_names_.size())
+            {
+                ROS_ERROR_STREAM_NAMED("precise_hw_interface", "post_init_configuration size "<<post_init_configuration_.size()<<" does not match joint_names size " <<joint_names_.size());
+                post_init_configuration_.clear();
+            }
+        }
+
         device_.reset(new Device(std::make_shared<TCPClient>(ip, control_port),
                                 std::make_shared<TCPClient>(ip, status_port)));
 
@@ -48,7 +58,7 @@ namespace precise_driver
         //Doosan like hack
         pnh.param<bool>("doosan_hack_enabled", doosan_hack_enabled_, doosan_hack_enabled_);
         sub_follow_joint_goal = driver_nh.subscribe<control_msgs::FollowJointTrajectoryActionGoal>
-                                    ("/arm/joint_trajectory_controller/follow_joint_trajectory/goal", 1, 
+                                    ("/arm/joint_trajectory_controller/follow_joint_trajectory/goal", 1,
                                     &PreciseHWInterface::followJointTrajectoryActionGoalCB, this);
     }
 
@@ -123,8 +133,20 @@ namespace precise_driver
             enableWrite(false);
             if(device_->init(profile_no_, profile_))
             {
-                if( device_->home())
+                if(device_->home())
                 {
+                    if(post_init_configuration_.size() > 0)
+                    {
+                        bool ret;
+                        ret = device_->moveJointPosition(profile_no_, post_init_configuration_);
+                        ret &= device_->waitForEom();
+                        if(!ret)
+                        {
+                            std::string msg = "Failed to move to post init configuration";
+                            ROS_ERROR_STREAM_NAMED("precise_hw_interface",msg);
+                        }
+                    }
+
                     device_->startCommandThread();
                     std::string msg = "successfully initialized";
                     ROS_INFO_STREAM_NAMED("precise_hw_interface",msg);
@@ -198,7 +220,7 @@ namespace precise_driver
             res.message = "axes is interpreted as bitmask and must be in [0, 31]";
             return true;
         }
-      
+
         enableWrite(false);
 
         if(req.data)
