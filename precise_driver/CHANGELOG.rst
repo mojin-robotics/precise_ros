@@ -2,6 +2,16 @@
 Changelog for package precise_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#34 <https://github.com/mojin-robotics/precise_ros/issues/34>`_ from benmaidel/feature/precise_post_init_config
+  move arm to post_init_configuration after successful initialization
+* let init be successful even if moving to post_init_config did not work
+* add gripper joint to post_init_configuration
+* log sizes
+* move arm to post_init_configuration after successful initialization
+* Contributors: Benjamin Maidel, Felix Messmer
+
 0.0.5 (2021-12-23)
 ------------------
 
