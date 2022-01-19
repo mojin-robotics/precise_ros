@@ -3,7 +3,7 @@
        name="PF400_long">
 
   <xacro:property name="yaml_file" value="$(find precise_description)/robots/PF400_long.yaml"/>
-  <xacro:property name="robot_properties" value="${load_yaml(yaml_file)}"/>
+  <xacro:property name="robot_properties" value="${xacro.load_yaml(yaml_file)}"/>
 
   <xacro:include filename="$(find precise_description)/urdf/precise_flex.urdf.xacro"/>
 
