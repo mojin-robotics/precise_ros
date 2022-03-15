@@ -2,6 +2,9 @@
 Changelog for package precise_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.6 (2022-01-12)
 ------------------
 * Merge pull request `#34 <https://github.com/mojin-robotics/precise_ros/issues/34>`_ from benmaidel/feature/precise_post_init_config

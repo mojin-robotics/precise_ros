@@ -2,6 +2,13 @@
 Changelog for package precise_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#35 <https://github.com/mojin-robotics/precise_ros/issues/35>`_ from fmessmer/fix/xacro_deprecation
+  fix xacro.load_yaml deprecation
+* fix xacro.load_yaml deprecation
+* Contributors: Felix Messmer, fmessmer
+
 0.0.6 (2022-01-12)
 ------------------
 
