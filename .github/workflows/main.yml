@@ -3,8 +3,8 @@ name: CI
 on:
   push:
   pull_request:
-#  schedule:
-#    - cron: "0 0 * * 0" # every Sunday at midnight
+  schedule:
+    - cron: "0 0 * * 0" # every Sunday at midnight
   workflow_dispatch:
 
 jobs:
@@ -18,7 +18,6 @@ jobs:
       AFTER_SCRIPT: 'rosenv bash .travis.xacro_test.sh'
       CATKIN_LINT: pedantic
       CATKIN_LINT_ARGS: '--ignore description_boilerplate'
-      CCACHE_DIR: /github/home/.ccache  # Directory for ccache (and how we enable ccache in industrial_ci)
       CMAKE_ARGS: -DCMAKE_BUILD_TYPE=Release
       PYLINT_ARGS: '--output-format=parseable --errors-only'
       PYLINT_CHECK: true
@@ -31,16 +30,10 @@ jobs:
           - { ROS_DISTRO: noetic }
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           lfs: true
           ssh-known-hosts: ''
-
-      # This step will fetch/store the directory used by ccache before/after the ci run
-      - uses: actions/cache@v2
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ matrix.ROS_DISTRO }}
 
       - uses: ros-industrial/industrial_ci@master
         with:
