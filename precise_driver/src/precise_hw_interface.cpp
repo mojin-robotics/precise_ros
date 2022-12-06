@@ -419,7 +419,7 @@ namespace precise_driver
 
     void PreciseHWInterface::produce_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat)
     {
-        if(device_->is_operational())
+        if(device_->is_operational() || device_->is_teachmode())
         {
             stat.summary(diagnostic_msgs::DiagnosticStatus::OK, "Driver operational");
         }

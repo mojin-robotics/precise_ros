@@ -270,6 +270,16 @@ namespace precise_driver
         return ret;
     }
 
+    bool Device::is_teachmode()
+    {
+        bool ret;
+        {
+            std::lock_guard<std::mutex> guard(mutex_state_data_);
+            ret = is_teachmode_;
+        }
+        return ret;
+    }
+
     void Device::fill_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat)
     {
         {
