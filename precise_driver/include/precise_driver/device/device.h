@@ -81,6 +81,8 @@ namespace precise_driver
         bool is_operational();
         //check if manipulator has completed init routine
         bool is_init();
+        //check if manipulator is in teach mode
+        bool is_teachmode();
         //fill some internal info for diagnostics
         void fill_diagnostics(diagnostic_updater::DiagnosticStatusWrapper &stat);
 
