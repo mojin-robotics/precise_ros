@@ -429,6 +429,7 @@ namespace precise_driver
         }
         stat.add("is_init", device_->is_init());
         stat.add("is_operational", device_->is_operational());
+        stat.add("is_teachmode", device_->is_teachmode());
         device_->fill_diagnostics(stat);
     }
 
