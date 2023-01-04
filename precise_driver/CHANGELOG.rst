@@ -2,6 +2,16 @@
 Changelog for package precise_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#37 <https://github.com/mojin-robotics/precise_ros/issues/37>`_ from fmessmer/feature/teachmode_diagnostics
+  add is_teachmode KeyValue
+* add is_teachmode KeyValue
+* Merge pull request `#36 <https://github.com/mojin-robotics/precise_ros/issues/36>`_ from Deleh/feature/teachmode_diagnostics
+  Set diagnostics state to OK in teachmode
+* set diagnostics state to ok in teachmode
+* Contributors: Denis Lehmann, Felix Messmer, Florian Weisshardt, fmessmer
+
 0.0.7 (2022-03-15)
 ------------------
 
