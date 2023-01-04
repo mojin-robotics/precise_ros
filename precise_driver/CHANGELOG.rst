@@ -2,8 +2,8 @@
 Changelog for package precise_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2023-01-04)
+------------------
 * Merge pull request `#37 <https://github.com/mojin-robotics/precise_ros/issues/37>`_ from fmessmer/feature/teachmode_diagnostics
   add is_teachmode KeyValue
 * add is_teachmode KeyValue
