@@ -9,7 +9,7 @@ on:
 
 jobs:
   industrial_ci:
-    if: github.event.pull_request.draft == false  # only run on non-draft PRs
+    if: github.event.pull_request.draft == false && github.repository_owner == 'mojin-robotics'
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
